@@ -1,0 +1,352 @@
+/* src/components/SimulationDashboard.css */
+.simulation-dashboard {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.patient-info h2 {
+  color: #e67e22;
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.patient-stats {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.patient-stats span {
+  font-size: 14px;
+  color: #666;
+  font-weight: 600;
+}
+
+.diagnosis {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.diagnosis.normal {
+  background: #d5f4e6;
+  color: #27ae60;
+}
+
+.diagnosis.prediabetic {
+  background: #fef9e7;
+  color: #f39c12;
+}
+
+.diagnosis.diabetic {
+  background: #fadbd8;
+  color: #e74c3c;
+}
+
+.dashboard-content {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 2rem;
+}
+
+.parameter-panel {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+}
+
+.parameter-panel h3 {
+  color: #e67e22;
+  font-size: 18px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.parameter-group {
+  margin-bottom: 1.5rem;
+}
+
+.parameter-group label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.parameter-group input[type="range"] {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #ddd;
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.parameter-group input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e67e22, #d35400);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.parameter-group small {
+  display: block;
+  color: #666;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.preset-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 2rem;
+}
+
+.preset-buttons button {
+  padding: 8px 12px;
+  border: 2px solid #e67e22;
+  border-radius: 6px;
+  background: white;
+  color: #e67e22;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.preset-buttons button:hover {
+  background: #e67e22;
+  color: white;
+}
+
+.results-panel {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  color: #666;
+}
+
+.error-message {
+  text-align: center;
+  padding: 2rem;
+}
+
+.error-message h3 {
+  color: #e74c3c;
+  margin-bottom: 1rem;
+}
+
+.simulation-results h3 {
+  color: #333;
+  margin-bottom: 1.5rem;
+}
+
+.results-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #e67e22;
+}
+
+.result-item label {
+  font-weight: 600;
+  color: #555;
+}
+
+.result-item .value {
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.result-item .value.normal {
+  color: #27ae60;
+}
+
+.result-item .value.prediabetic {
+  color: #f39c12;
+}
+
+.result-item .value.diabetic {
+  color: #e74c3c;
+}
+
+.metric-selector {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+.metric-selector h4 {
+  color: #333;
+  font-size: 16px;
+  margin-bottom: 1rem;
+}
+
+.metric-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.metric-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.metric-checkbox:hover {
+  background: #f8f9fa;
+}
+
+.metric-checkbox input[type="checkbox"] {
+  margin: 0;
+}
+
+.metric-label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.metric-label.glucose { color: #e74c3c; }
+.metric-label.insulin { color: #3498db; }
+.metric-label.glucagon { color: #9b59b6; }
+.metric-label.glp1 { color: #f39c12; }
+
+.plot-container {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  min-height: 600px;
+}
+
+.simulation-summary {
+  margin-top: 2rem;
+}
+
+.summary-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.summary-card h3 {
+  color: #e67e22;
+  font-size: 18px;
+  margin-bottom: 1rem;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #e67e22;
+}
+
+.summary-item label {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+}
+
+.summary-item span {
+  font-weight: 700;
+  color: #333;
+  font-size: 14px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .dashboard-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .parameter-panel {
+    order: 2;
+  }
+  
+  .results-panel {
+    order: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .simulation-dashboard {
+    padding: 1rem;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .patient-stats {
+    justify-content: center;
+  }
+  
+  .results-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .preset-buttons {
+    grid-template-columns: 1fr;
+  }
+}
