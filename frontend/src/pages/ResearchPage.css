@@ -1,0 +1,1104 @@
+/* src/pages/ResearchPage.css */
+
+.research-page {
+  padding-top: 80px; /* Account for fixed navbar */
+}
+
+/* Research Hero Section */
+.research-hero {
+  background: linear-gradient(135deg, #2c3e50 0%, #1a1a1a 100%);
+  color: white;
+  padding: 80px 0;
+  text-align: center;
+}
+
+.research-hero h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.hero-subtitle {
+  font-size: 1.25rem;
+  margin-bottom: 3rem;
+  color: #bdc3c7;
+}
+
+.paper-citation {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.citation-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(230, 126, 34, 0.3);
+  border-radius: 12px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  text-align: left;
+}
+
+.citation-box h3 {
+  color: #e67e22;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.citation-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  color: #ecf0f1;
+}
+
+.citation-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.citation-links a,
+.citation-links button {
+  padding: 12px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  font-size: 16px;
+}
+
+.citation-links .btn-secondary {
+  background: transparent;
+  color: #e67e22;
+  border: 2px solid #e67e22;
+}
+
+.citation-links .btn-secondary:hover {
+  background: #e67e22;
+  color: white;
+}
+
+.citation-links .btn-primary {
+  background: #e67e22;
+  color: white;
+}
+
+.citation-links .btn-primary:hover {
+  background: #d35400;
+}
+
+/* Model Overview Section */
+.model-overview {
+  padding: 80px 0;
+  background: #f8f9fa;
+}
+
+.model-overview h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: #333;
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.overview-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.overview-card:hover {
+  transform: translateY(-5px);
+}
+
+.card-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.overview-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.overview-card p {
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Variables Section */
+.variables-section {
+  padding: 80px 0;
+  background: white;
+}
+
+.variables-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: #333;
+}
+
+.variables-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.variable-card {
+  background: #f8f9fa;
+  border-left: 4px solid #e67e22;
+  padding: 1.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.variable-card:hover {
+  background: #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.variable-card h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #e67e22;
+  font-family: 'Courier New', monospace;
+}
+
+.variable-card p {
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.variable-role {
+  font-size: 0.9rem;
+  color: #999;
+  font-style: italic;
+}
+
+/* Equations Section */
+.equations-section {
+  padding: 80px 0;
+  background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+  color: white;
+}
+
+.equations-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.equations-section .section-subtitle {
+  text-align: center;
+  font-size: 1.25rem;
+  margin-bottom: 3rem;
+  color: #bdc3c7;
+}
+
+.equations-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.equation-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.equation-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #e67e22;
+}
+
+.equation-card.active {
+  background: rgba(230, 126, 34, 0.1);
+  border-color: #e67e22;
+}
+
+.equation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.equation-header h3 {
+  color: #e67e22;
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+.equation-formula {
+  font-family: 'Courier New', monospace;
+  font-size: 1.25rem;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1rem;
+  border-radius: 6px;
+  color: #ecf0f1;
+  border-left: 3px solid #e67e22;
+}
+
+.equation-details {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.equation-description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+  color: #ecf0f1;
+}
+
+.equation-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.info-section h4 {
+  color: #e67e22;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.info-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.info-section li {
+  padding: 0.25rem 0;
+  color: #bdc3c7;
+  font-size: 0.95rem;
+}
+
+.info-section li::before {
+  content: '•';
+  color: #e67e22;
+  margin-right: 0.5rem;
+}
+
+/* Parameters Section */
+.parameters-section {
+  padding: 80px 0;
+  background: #f8f9fa;
+}
+
+.parameters-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.parameters-section .section-subtitle {
+  text-align: center;
+  font-size: 1.25rem;
+  margin-bottom: 3rem;
+  color: #666;
+}
+
+.parameters-table-container {
+  overflow-x: auto;
+  margin-bottom: 2rem;
+}
+
+.parameters-table {
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.parameters-table th {
+  background: #e67e22;
+  color: white;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+}
+
+.parameters-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.parameters-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.parameters-table code {
+  background: #f1f2f6;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  color: #e67e22;
+  font-weight: 600;
+}
+
+.parameters-note {
+  background: #fff3e0;
+  border: 1px solid #ffcc02;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+.parameters-note p {
+  margin: 0;
+  color: #e65100;
+}
+
+/* Pathophysiology Section */
+.pathophysiology-section {
+  padding: 80px 0;
+  background: linear-gradient(135deg, #0f0f23, #1a1a2e);
+  color: white;
+}
+
+.pathophysiology-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.pathophysiology-section .section-subtitle {
+  text-align: center;
+  font-size: 1.25rem;
+  margin-bottom: 3rem;
+  color: #bdc3c7;
+}
+
+.pathophysiology-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.scenario-tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 3rem;
+  gap: 1rem;
+}
+
+.scenario-tabs .tab {
+  padding: 15px 30px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.scenario-tabs .tab:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #e67e22;
+}
+
+.scenario-tabs .tab.active {
+  background: #e67e22;
+  border-color: #e67e22;
+  color: white;
+}
+
+.flowchart-container {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  padding: 3rem;
+  margin-bottom: 3rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 700px;
+  position: relative;
+}
+
+.flowchart {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-around;
+}
+
+.flowchart-title {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #e67e22;
+  margin-bottom: 2rem;
+}
+
+.component {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  position: absolute;
+  min-height: 100px;
+  width: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+}
+
+.component:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(230, 126, 34, 0.3);
+}
+
+.component-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.component-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: white;
+  line-height: 1.2;
+}
+
+.component-note {
+  font-size: 0.7rem;
+  color: #bdc3c7;
+  font-style: italic;
+  margin-top: 0.3rem;
+  line-height: 1.1;
+}
+
+.sub-component {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+}
+
+.sub-component .component-label {
+  font-size: 0.75rem;
+  margin-bottom: 0.2rem;
+}
+
+.connection-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Component positioning for normal pathway */
+.normal-pathway [data-component="food-intake"] {
+  top: 80px;
+  left: 50px;
+}
+
+.normal-pathway [data-component="glp1"] {
+  top: 80px;
+  left: 220px;
+}
+
+.normal-pathway [data-component="beta-cell"] {
+  top: 80px;
+  left: 390px;
+}
+
+.normal-pathway [data-component="insulin"] {
+  top: 80px;
+  left: 560px;
+}
+
+.normal-pathway [data-component="glut4"] {
+  top: 80px;
+  left: 730px;
+}
+
+.normal-pathway [data-component="glucose"] {
+  top: 220px;
+  left: 730px;
+}
+
+.normal-pathway [data-component="liver"] {
+  top: 360px;
+  left: 730px;
+}
+
+.normal-pathway [data-component="alpha-cell"] {
+  top: 360px;
+  left: 390px;
+}
+
+.normal-pathway [data-component="glucagon"] {
+  top: 360px;
+  left: 560px;
+}
+
+.normal-pathway [data-component="glut2"] {
+  top: 360px;
+  left: 730px;
+}
+
+/* Component positioning for obesity pathway */
+.obesity-pathway [data-component="food-intake"] {
+  top: 80px;
+  left: 50px;
+}
+
+.obesity-pathway [data-component="obesity"] {
+  top: 80px;
+  left: 220px;
+}
+
+.obesity-pathway [data-component="nefa"] {
+  top: 80px;
+  left: 390px;
+}
+
+.obesity-pathway [data-component="palmitic"] {
+  top: 80px;
+  left: 560px;
+}
+
+.obesity-pathway [data-component="oleic"] {
+  top: 220px;
+  left: 390px;
+}
+
+.obesity-pathway [data-component="tnf"] {
+  top: 80px;
+  left: 730px;
+}
+
+.obesity-pathway [data-component="glp1"] {
+  top: 280px;
+  left: 50px;
+}
+
+.obesity-pathway [data-component="beta-cell"] {
+  top: 280px;
+  left: 220px;
+}
+
+.obesity-pathway [data-component="insulin"] {
+  top: 280px;
+  left: 390px;
+}
+
+.obesity-pathway [data-component="glut4"] {
+  top: 280px;
+  left: 560px;
+}
+
+.obesity-pathway [data-component="glucose"] {
+  top: 420px;
+  left: 730px;
+}
+
+/* Component positioning for treatment pathway */
+.treatment-pathway [data-component="mounjaro"] {
+  top: 80px;
+  left: 50px;
+}
+
+.treatment-pathway [data-component="glp1"] {
+  top: 80px;
+  left: 220px;
+}
+
+.treatment-pathway [data-component="beta-cell"] {
+  top: 80px;
+  left: 390px;
+}
+
+.treatment-pathway [data-component="insulin"] {
+  top: 80px;
+  left: 560px;
+}
+
+.treatment-pathway [data-component="glut4"] {
+  top: 80px;
+  left: 730px;
+}
+
+.treatment-pathway [data-component="glucose"] {
+  top: 220px;
+  left: 730px;
+}
+
+.treatment-pathway [data-component="food-intake"] {
+  top: 280px;
+  left: 50px;
+}
+
+.treatment-pathway [data-component="weight-loss"] {
+  top: 280px;
+  left: 220px;
+}
+
+.treatment-pathway [data-component="nefa"] {
+  top: 280px;
+  left: 390px;
+}
+
+.treatment-pathway [data-component="palmitic"] {
+  top: 280px;
+  left: 560px;
+}
+
+.treatment-pathway [data-component="tnf"] {
+  top: 280px;
+  left: 730px;
+}
+
+.treatment-pathway [data-component="glucagon"] {
+  top: 420px;
+  left: 390px;
+}
+
+/* Component type styles */
+.component.food-intake {
+  border-color: #f39c12;
+  background: rgba(243, 156, 18, 0.2);
+}
+
+.component.hormone {
+  border-color: #3498db;
+  background: rgba(52, 152, 219, 0.2);
+}
+
+.component.cell {
+  border-color: #e74c3c;
+  background: rgba(231, 76, 60, 0.2);
+}
+
+.component.transporter {
+  border-color: #2ecc71;
+  background: rgba(46, 204, 113, 0.2);
+}
+
+.component.metabolite {
+  border-color: #9b59b6;
+  background: rgba(155, 89, 182, 0.2);
+}
+
+.component.organ {
+  border-color: #e67e22;
+  background: rgba(230, 126, 34, 0.2);
+}
+
+.component.inflammatory {
+  border-color: #e74c3c;
+  background: rgba(231, 76, 60, 0.3);
+}
+
+.component.drug {
+  border-color: #1abc9c;
+  background: rgba(26, 188, 156, 0.2);
+}
+
+.component.condition {
+  border-color: #f1c40f;
+  background: rgba(241, 196, 15, 0.2);
+}
+
+/* State-specific styles */
+.component.enhanced {
+  border-color: #2ecc71;
+  background: rgba(46, 204, 113, 0.3);
+  animation: pulse 2s infinite;
+}
+
+.component.impaired {
+  border-color: #e74c3c;
+  background: rgba(231, 76, 60, 0.3);
+  animation: warning 2s infinite;
+}
+
+.component.restored {
+  border-color: #1abc9c;
+  background: rgba(26, 188, 156, 0.3);
+  animation: healing 2s infinite;
+}
+
+.component.reduced {
+  border-color: #95a5a6;
+  background: rgba(149, 165, 166, 0.3);
+  opacity: 0.8;
+}
+
+.component.improved {
+  border-color: #2ecc71;
+  background: rgba(46, 204, 113, 0.3);
+  animation: success 2s infinite;
+}
+
+.component.elevated {
+  border-color: #e74c3c;
+  background: rgba(231, 76, 60, 0.3);
+  animation: danger 2s infinite;
+}
+
+.component.suppressed {
+  border-color: #95a5a6;
+  background: rgba(149, 165, 166, 0.3);
+  opacity: 0.7;
+}
+
+/* Pathway descriptions */
+.pathway-description {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 2rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.description-card {
+  margin: 0;
+}
+
+.description-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.description-card.normal h3 {
+  color: #2ecc71;
+}
+
+.description-card.warning h3 {
+  color: #f39c12;
+}
+
+.description-card.success h3 {
+  color: #2ecc71;
+}
+
+.description-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.description-card li {
+  padding: 0.5rem 0;
+  color: #ecf0f1;
+  padding-left: 1.5rem;
+  position: relative;
+  line-height: 1.6;
+}
+
+.description-card li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: #e67e22;
+  font-weight: bold;
+}
+
+.description-card li strong {
+  color: #e67e22;
+}
+
+/* Assumptions Section */
+.assumptions-section {
+  padding: 80px 0;
+  background: white;
+}
+
+.assumptions-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: #333;
+}
+
+.assumptions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.assumption-card {
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 2rem;
+  border-top: 4px solid #e67e22;
+}
+
+.assumption-card h3 {
+  color: #333;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.assumption-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.assumption-card li {
+  padding: 0.5rem 0;
+  color: #666;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.assumption-card li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: #e67e22;
+  font-weight: bold;
+}
+
+/* Authors Section */
+.authors-section {
+  padding: 80px 0;
+  background: #f8f9fa;
+}
+
+.authors-section h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 3rem;
+  color: #333;
+}
+
+.authors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 3rem;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.author-card {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.author-card:hover {
+  transform: translateY(-5px);
+}
+
+.author-photo {
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 1.5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e67e22, #d35400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.author-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.author-affiliation {
+  font-size: 0.95rem;
+  color: #e67e22;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.author-bio {
+  color: #666;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* Animations */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes warning {
+  0%, 100% { border-color: #e74c3c; }
+  50% { border-color: #c0392b; }
+}
+
+@keyframes healing {
+  0%, 100% { border-color: #1abc9c; }
+  50% { border-color: #16a085; }
+}
+
+@keyframes success {
+  0%, 100% { border-color: #2ecc71; }
+  50% { border-color: #27ae60; }
+}
+
+@keyframes danger {
+  0%, 100% { border-color: #e74c3c; }
+  50% { border-color: #c0392b; }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .research-hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .equation-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .citation-links {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .flowchart {
+    height: 800px;
+  }
+  
+  .component {
+    min-height: 80px;
+    width: 120px;
+  }
+  
+  .component-icon {
+    font-size: 1.5rem;
+  }
+  
+  .component-label {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .research-hero h1 {
+    font-size: 2rem;
+  }
+  
+  .equation-formula {
+    font-size: 1rem;
+  }
+  
+  .parameters-table {
+    font-size: 0.9rem;
+  }
+  
+  .parameters-table th,
+  .parameters-table td {
+    padding: 0.75rem;
+  }
+  
+  .overview-grid,
+  .variables-grid,
+  .assumptions-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .equation-info {
+    grid-template-columns: 1fr;
+  }
+  
+  .authors-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .scenario-tabs {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .scenario-tabs .tab {
+    width: 100%;
+    max-width: 300px;
+  }
+  
+  .flowchart-container {
+    padding: 1.5rem;
+  }
+  
+  .flowchart {
+    height: 1000px;
+  }
+  
+  .component {
+    min-height: 70px;
+    width: 100px;
+    padding: 0.75rem;
+  }
+  
+  .component-icon {
+    font-size: 1.25rem;
+  }
+  
+  .component-label {
+    font-size: 0.7rem;
+  }
+  
+  .component-note {
+    font-size: 0.6rem;
+  }
+}

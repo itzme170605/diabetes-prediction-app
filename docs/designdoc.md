@@ -1049,7 +1049,7 @@ source venv/Scripts/activate
 pip install -r requirements.txt
 
 # Start server
-python run.py
+python ./app/main.py 
 # Server runs on http://localhost:8000
 ```
 
