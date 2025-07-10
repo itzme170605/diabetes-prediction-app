@@ -84,6 +84,9 @@
   border-radius: 6px;
   font-size: 16px;
   transition: border-color 0.3s ease;
+  background: white;
+  color: #333;
+  font-family: inherit;
 }
 
 .form-group input:focus,
@@ -91,11 +94,38 @@
   outline: none;
   border-color: #e67e22;
   box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
+  background: white;
+  color: #333;
 }
 
 .form-group input::placeholder {
   color: #999;
   font-size: 14px;
+  opacity: 0.7;
+}
+
+.form-group input::-webkit-input-placeholder {
+  color: #999;
+  opacity: 0.7;
+}
+
+.form-group input::-moz-placeholder {
+  color: #999;
+  opacity: 0.7;
+}
+
+.form-group input:-ms-input-placeholder {
+  color: #999;
+  opacity: 0.7;
+}
+
+.form-group select {
+  cursor: pointer;
+}
+
+.form-group select option {
+  background: white;
+  color: #333;
 }
 
 .bmi-display {
@@ -106,12 +136,56 @@
   font-weight: 600;
   color: #e67e22;
   text-align: center;
+  font-size: 16px;
 }
 
 .form-actions {
   display: flex;
   justify-content: center;
   margin-top: 1rem;
+}
+
+.btn-primary {
+  background: #e67e22;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #d35400;
+}
+
+.btn-primary:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.3);
+}
+
+/* Ensure input text is always visible */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="tel"],
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: white !important;
+  color: #333 !important;
+}
+
+/* Fix for autofill styling */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  -webkit-text-fill-color: #333 !important;
 }
 
 /* Responsive Design */
@@ -128,4 +202,22 @@
   .patient-form-modal h2 {
     font-size: 24px;
   }
+  
+  .form-group input,
+  .form-group select {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Additional fixes for better visibility */
+.form-group input:not(:placeholder-shown) {
+  color: #333 !important;
+}
+
+.form-group input:valid {
+  color: #333 !important;
+}
+
+.form-group input:invalid {
+  color: #333 !important;
 }
