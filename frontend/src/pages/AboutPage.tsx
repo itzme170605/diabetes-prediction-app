@@ -10,7 +10,7 @@ const AboutPage: React.FC = () => {
         <div className="container">
           <h1>About Our Team</h1>
           <p className="hero-subtitle">
-            Meet the researchers and developers behind DiabetesScope
+            Meet the researchers and developers behind NourLab
           </p>
         </div>
       </section>
