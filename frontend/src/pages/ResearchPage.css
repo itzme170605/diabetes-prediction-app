@@ -446,7 +446,7 @@
 .flowchart {
   position: relative;
   width: 100%;
-  height: 600px;
+  height: 400px;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
@@ -467,14 +467,14 @@
 .component {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
-  padding: 1rem;
+  padding: 1.2rem;
   text-align: center;
   border: 2px solid transparent;
   transition: all 0.3s ease;
   backdrop-filter: blur(5px);
   position: absolute;
-  min-height: 100px;
-  width: 140px;
+  min-height: 60px;
+  width: 120px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -533,170 +533,170 @@
 
 /* Component positioning for normal pathway */
 .normal-pathway [data-component="food-intake"] {
-  top: 80px;
-  left: 50px;
+  top: 70px;
+  left: 0px;
 }
 
 .normal-pathway [data-component="glp1"] {
   top: 80px;
-  left: 220px;
+  left: 270px;
 }
 
 .normal-pathway [data-component="beta-cell"] {
   top: 80px;
-  left: 390px;
+  left: 490px;
 }
 
 .normal-pathway [data-component="insulin"] {
   top: 80px;
-  left: 560px;
+  left: 710px;
 }
 
 .normal-pathway [data-component="glut4"] {
   top: 80px;
-  left: 730px;
+  left: 930px;
 }
 
 .normal-pathway [data-component="glucose"] {
-  top: 220px;
-  left: 730px;
+  top: 250px;
+  left: 930px;
 }
 
 .normal-pathway [data-component="liver"] {
-  top: 360px;
-  left: 730px;
+  top: 420px;
+  left: 930px;
 }
 
 .normal-pathway [data-component="alpha-cell"] {
-  top: 360px;
-  left: 390px;
+  top: 430px;
+  left: 490px;
 }
 
 .normal-pathway [data-component="glucagon"] {
-  top: 360px;
-  left: 560px;
+  top: 430px;
+  left: 710px;
 }
 
 .normal-pathway [data-component="glut2"] {
-  top: 360px;
-  left: 730px;
+  top: 430px;
+  left: 930px;
 }
 
 /* Component positioning for obesity pathway */
 .obesity-pathway [data-component="food-intake"] {
   top: 80px;
-  left: 50px;
+  left: 80px;
 }
 
 .obesity-pathway [data-component="obesity"] {
   top: 80px;
-  left: 220px;
+  left: 270px;
 }
 
 .obesity-pathway [data-component="nefa"] {
   top: 80px;
-  left: 390px;
+  left: 490px;
 }
 
 .obesity-pathway [data-component="palmitic"] {
   top: 80px;
-  left: 560px;
+  left: 710px;
 }
 
 .obesity-pathway [data-component="oleic"] {
-  top: 220px;
-  left: 390px;
+  top: 250px;
+  left: 490px;
 }
 
 .obesity-pathway [data-component="tnf"] {
   top: 80px;
-  left: 730px;
+  left: 930px;
 }
 
 .obesity-pathway [data-component="glp1"] {
-  top: 280px;
-  left: 50px;
+  top: 300px;
+  left: 80px;
 }
 
 .obesity-pathway [data-component="beta-cell"] {
-  top: 280px;
-  left: 220px;
+  top: 300px;
+  left: 270px;
 }
 
 .obesity-pathway [data-component="insulin"] {
-  top: 280px;
-  left: 390px;
+  top: 300px;
+  left: 490px;
 }
 
 .obesity-pathway [data-component="glut4"] {
-  top: 280px;
-  left: 560px;
+  top: 360px;
+  left: 710px;
 }
 
 .obesity-pathway [data-component="glucose"] {
-  top: 420px;
-  left: 730px;
+  top: 360px;
+  left: 930px;
 }
 
 /* Component positioning for treatment pathway */
 .treatment-pathway [data-component="mounjaro"] {
   top: 80px;
-  left: 50px;
+  left: 80px;
 }
 
 .treatment-pathway [data-component="glp1"] {
   top: 80px;
-  left: 220px;
+  left: 270px;
 }
 
 .treatment-pathway [data-component="beta-cell"] {
   top: 80px;
-  left: 390px;
+  left: 490px;
 }
 
 .treatment-pathway [data-component="insulin"] {
   top: 80px;
-  left: 560px;
+  left: 710px;
 }
 
 .treatment-pathway [data-component="glut4"] {
   top: 80px;
-  left: 730px;
+  left: 930px;
 }
 
 .treatment-pathway [data-component="glucose"] {
-  top: 220px;
-  left: 730px;
+  top: 250px;
+  left: 930px;
 }
 
 .treatment-pathway [data-component="food-intake"] {
   top: 280px;
-  left: 50px;
+  left: 80px;
 }
 
 .treatment-pathway [data-component="weight-loss"] {
   top: 280px;
-  left: 220px;
+  left: 270px;
 }
 
 .treatment-pathway [data-component="nefa"] {
   top: 280px;
-  left: 390px;
+  left: 490px;
 }
 
 .treatment-pathway [data-component="palmitic"] {
   top: 280px;
-  left: 560px;
+  left: 710px;
 }
 
 .treatment-pathway [data-component="tnf"] {
   top: 280px;
-  left: 730px;
+  left: 930px;
 }
 
 .treatment-pathway [data-component="glucagon"] {
-  top: 420px;
-  left: 390px;
+  top: 430px;
+  left: 490px;
 }
 
 /* Component type styles */
@@ -1017,7 +1017,7 @@
   }
   
   .flowchart {
-    height: 800px;
+    height: 100px;
   }
   
   .component {
