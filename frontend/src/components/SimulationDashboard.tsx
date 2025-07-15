@@ -1,7 +1,9 @@
 // src/components/SimulationDashboard.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Plot from 'react-plotly.js';
-import { PatientData, SimulationResult, SimulationParams } from '../types/diabetes';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import { PatientData, SimulationResult, SimulationParams, ODEParameters } from '../types/diabetes';
 import { simulationAPI } from '../utils/api';
 import './SimulationDashboard.css';
 
@@ -13,11 +15,16 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
   const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [exportingPDF, setExportingPDF] = useState(false);
+  const plotRef = useRef<any>(null);
+  
   const [selectedMetrics, setSelectedMetrics] = useState({
     glucose: true,
     insulin: true,
     glucagon: false,
     glp1: false,
+    beta_cells: false,
+    alpha_cells: false,
   });
   
   const [simulationParams, setSimulationParams] = useState<SimulationParams>({
@@ -27,6 +34,8 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
     palmitic_factor: 1.0,
     drug_dosage: 0.0,
     show_optimal: true,
+    meal_times: [0, 6, 12, 18],
+    exercise_times: [],
   });
 
   useEffect(() => {
@@ -64,7 +73,7 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
     if (!simulationResult) return [];
 
     const traces: any[] = [];
-    const { time_points, glucose, insulin, glucagon, glp1, optimal_glucose } = simulationResult;
+    const { time_points, glucose, insulin, glucagon, glp1, beta_cells, alpha_cells, optimal_glucose } = simulationResult;
 
     // Glucose trace
     if (selectedMetrics.glucose) {
@@ -134,15 +143,42 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
       });
     }
 
+    // Beta cells trace
+    if (selectedMetrics.beta_cells) {
+      traces.push({
+        x: time_points,
+        y: beta_cells,
+        type: 'scatter',
+        mode: 'lines',
+        name: 'β-cells',
+        line: { color: '#1abc9c', width: 2 },
+        yaxis: 'y5',
+        hovertemplate: 'Time: %{x:.1f}h<br>β-cells: %{y:.1f}<extra></extra>',
+      });
+    }
+
+    // Alpha cells trace
+    if (selectedMetrics.alpha_cells) {
+      traces.push({
+        x: time_points,
+        y: alpha_cells,
+        type: 'scatter',
+        mode: 'lines',
+        name: 'α-cells',
+        line: { color: '#e67e22', width: 2 },
+        yaxis: 'y6',
+        hovertemplate: 'Time: %{x:.1f}h<br>α-cells: %{y:.1f}<extra></extra>',
+      });
+    }
+
     return traces;
   };
 
   const getPlotLayout = () => {
     const yAxes: any = {};
-    let axisCount = 0;
+    let rightPosition = 0.85;
 
     if (selectedMetrics.glucose) {
-      axisCount++;
       yAxes.yaxis = {
         title: 'Glucose (mg/dL)',
         side: 'left',
@@ -153,65 +189,101 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
     }
 
     if (selectedMetrics.insulin) {
-      axisCount++;
       yAxes.yaxis2 = {
         title: 'Insulin (pmol/L)',
         side: 'right',
         overlaying: 'y',
         color: '#3498db',
         showgrid: false,
+        position: rightPosition,
       };
+      rightPosition -= 0.05;
     }
 
     if (selectedMetrics.glucagon) {
-      axisCount++;
       yAxes.yaxis3 = {
         title: 'Glucagon (pg/mL)',
         side: 'right',
         overlaying: 'y',
-        position: 0.85,
+        position: rightPosition,
         color: '#9b59b6',
         showgrid: false,
       };
+      rightPosition -= 0.05;
     }
 
     if (selectedMetrics.glp1) {
-      axisCount++;
       yAxes.yaxis4 = {
         title: 'GLP-1 (pmol/L)',
         side: 'right',
         overlaying: 'y',
-        position: 0.9,
+        position: rightPosition,
         color: '#f39c12',
+        showgrid: false,
+      };
+      rightPosition -= 0.05;
+    }
+
+    if (selectedMetrics.beta_cells) {
+      yAxes.yaxis5 = {
+        title: 'β-cells',
+        side: 'right',
+        overlaying: 'y',
+        position: rightPosition,
+        color: '#1abc9c',
+        showgrid: false,
+      };
+      rightPosition -= 0.05;
+    }
+
+    if (selectedMetrics.alpha_cells) {
+      yAxes.yaxis6 = {
+        title: 'α-cells',
+        side: 'right',
+        overlaying: 'y',
+        position: rightPosition,
+        color: '#e67e22',
         showgrid: false,
       };
     }
 
     // Add meal time annotations
-    const mealTimes = [];
-    for (let i = 0; i < simulationParams.simulation_hours; i += 6) {
-      if (i < simulationParams.simulation_hours) {
-        mealTimes.push({
-          x: i,
-          y: 0,
-          xref: 'x',
-          yref: 'paper',
-          text: '🍽️',
-          showarrow: true,
-          arrowhead: 2,
-          arrowsize: 1,
-          arrowwidth: 2,
-          arrowcolor: '#e67e22',
-          ax: 0,
-          ay: -30,
-          font: { size: 16 }
-        });
-      }
-    }
+    const mealTimes = simulationParams.meal_times?.map(mealTime => ({
+      x: mealTime,
+      y: 0,
+      xref: 'x',
+      yref: 'paper',
+      text: '🍽️',
+      showarrow: true,
+      arrowhead: 2,
+      arrowsize: 1,
+      arrowwidth: 2,
+      arrowcolor: '#e67e22',
+      ax: 0,
+      ay: -30,
+      font: { size: 16 }
+    })) || [];
+
+    // Add exercise time annotations
+    const exerciseTimes = simulationParams.exercise_times?.map(exerciseTime => ({
+      x: exerciseTime,
+      y: 0,
+      xref: 'x',
+      yref: 'paper',
+      text: '🏃',
+      showarrow: true,
+      arrowhead: 2,
+      arrowsize: 1,
+      arrowwidth: 2,
+      arrowcolor: '#2ecc71',
+      ax: 0,
+      ay: -30,
+      font: { size: 16 }
+    })) || [];
 
     return {
       title: {
-        text: `Glucose Dynamics - ${patientData.name}`,
+        text: `Glucose Dynamics Simulation - ${patientData.name}`,
         font: { size: 20, color: '#333' },
       },
       xaxis: {
@@ -227,13 +299,13 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
         x: 0.5,
         xanchor: 'center',
       },
-      margin: { l: 60, r: 60, t: 80, b: 100 },
+      margin: { l: 60, r: 120, t: 80, b: 100 },
       height: 500,
       showlegend: true,
       hovermode: 'x unified',
       plot_bgcolor: 'white',
       paper_bgcolor: 'white',
-      annotations: mealTimes,
+      annotations: [...mealTimes, ...exerciseTimes],
       shapes: [
         // Normal glucose range shading
         {
@@ -252,27 +324,227 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
     };
   };
 
-  const downloadData = () => {
+  const generatePDFReport = async () => {
     if (!simulationResult) return;
-    
-    const csvContent = [
-      ['Time (hours)', 'Glucose (mg/dL)', 'Insulin (pmol/L)', 'Glucagon (pg/mL)', 'GLP-1 (pmol/L)'],
-      ...simulationResult.time_points.map((time, i) => [
-        time.toFixed(2),
-        simulationResult.glucose[i].toFixed(2),
-        simulationResult.insulin[i].toFixed(2),
-        simulationResult.glucagon[i].toFixed(2),
-        simulationResult.glp1[i].toFixed(2),
-      ])
-    ].map(row => row.join(',')).join('\n');
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `diabetes_simulation_${patientData.name.replace(/\s+/g, '_')}.csv`;
-    a.click();
-    window.URL.revokeObjectURL(url);
+    setExportingPDF(true);
+    try {
+      // Create a new jsPDF instance
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      let yPosition = 20;
+
+      // Title
+      pdf.setFontSize(20);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Diabetes Simulation Report', pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 15;
+
+      // Patient Information
+      pdf.setFontSize(16);
+      pdf.text('Patient Information', 20, yPosition);
+      yPosition += 10;
+
+      pdf.setFontSize(12);
+      pdf.setFont('helvetica', 'normal');
+      const patientInfo = [
+        `Name: ${simulationResult.patient_info.name}`,
+        `Age: ${simulationResult.patient_info.age} years`,
+        `Gender: ${simulationResult.patient_info.gender}`,
+        `BMI: ${simulationResult.patient_info.bmi} kg/m² (${simulationResult.patient_info.bmi_category})`,
+        `Diabetes Type: ${simulationResult.patient_info.diabetes_type}`,
+        `Diabetes Risk: ${simulationResult.patient_info.diabetes_risk}`,
+        `Activity Level: ${simulationResult.patient_info.activity_level}`,
+        `Medications: ${simulationResult.patient_info.medications.join(', ') || 'None'}`
+      ];
+
+      patientInfo.forEach(info => {
+        pdf.text(info, 20, yPosition);
+        yPosition += 6;
+      });
+
+      yPosition += 10;
+
+      // Simulation Results Summary
+      pdf.setFontSize(16);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Simulation Results', 20, yPosition);
+      yPosition += 10;
+
+      pdf.setFontSize(12);
+      pdf.setFont('helvetica', 'normal');
+      const simulationSummary = [
+        `Estimated A1C: ${simulationResult.simulation_summary.estimated_a1c}%`,
+        `Diagnosis: ${simulationResult.diagnosis}`,
+        `Average Glucose: ${simulationResult.simulation_summary.average_glucose} mg/dL`,
+        `Glucose Range: ${simulationResult.simulation_summary.min_glucose} - ${simulationResult.simulation_summary.max_glucose} mg/dL`,
+        `Glucose Variability: ${simulationResult.simulation_summary.glucose_variability} mg/dL`,
+        `Time in Target Range (70-180 mg/dL): ${simulationResult.simulation_summary.time_in_range}%`,
+        `Time Above Range: ${simulationResult.simulation_summary.time_above_range}%`,
+        `Time Below Range: ${simulationResult.simulation_summary.time_below_range}%`
+      ];
+
+      simulationSummary.forEach(info => {
+        pdf.text(info, 20, yPosition);
+        yPosition += 6;
+      });
+
+      // Add new page for chart
+      pdf.addPage();
+      yPosition = 20;
+
+      // Chart title
+      pdf.setFontSize(16);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Glucose Dynamics Chart', pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 15;
+
+      // Capture the chart
+      if (plotRef.current) {
+        const chartElement = plotRef.current.el;
+        const canvas = await html2canvas(chartElement, {
+          scale: 2,
+          backgroundColor: '#ffffff'
+        });
+
+        const imgData = canvas.toDataURL('image/png');
+        const imgWidth = pageWidth - 40;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        pdf.addImage(imgData, 'PNG', 20, yPosition, imgWidth, imgHeight);
+        yPosition += imgHeight + 10;
+      }
+
+      // Add new page for ODE equations
+      pdf.addPage();
+      yPosition = 20;
+
+      // ODE Equations Section
+      pdf.setFontSize(16);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Mathematical Model: Ordinary Differential Equations', 20, yPosition);
+      yPosition += 15;
+
+      pdf.setFontSize(12);
+      pdf.setFont('helvetica', 'normal');
+      pdf.text('This simulation is based on a system of 12 coupled differential equations that model', 20, yPosition);
+      yPosition += 6;
+      pdf.text('the complex interactions between glucose, insulin, and other hormones in the body.', 20, yPosition);
+      yPosition += 10;
+
+      // Key equations (simplified for general audience)
+      pdf.setFontSize(14);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Key Model Components:', 20, yPosition);
+      yPosition += 10;
+
+      pdf.setFontSize(11);
+      pdf.setFont('helvetica', 'normal');
+      const equations = [
+        '1. Blood Glucose (G): Affected by food intake, insulin action, and liver glucose release',
+        '   • Increases with meals and stress',
+        '   • Decreases with insulin and exercise',
+        '',
+        '2. Insulin (I): Produced by pancreatic β-cells in response to glucose',
+        '   • Higher glucose levels trigger more insulin production',
+        '   • Helps cells absorb glucose from blood',
+        '',
+        '3. Glucagon (C): Produced by pancreatic α-cells when glucose is low',
+        '   • Signals liver to release stored glucose',
+        '   • Counteracts insulin effects',
+        '',
+        '4. GLP-1 (L): Incretin hormone that enhances insulin secretion',
+        '   • Released after meals',
+        '   • Target for diabetes medications',
+        '',
+        '5. Pancreatic Cells (β and α): Respond to glucose and hormone levels',
+        '   • β-cells: Produce insulin when glucose is high',
+        '   • α-cells: Produce glucagon when glucose is low',
+        '',
+        '6. Glucose Transporters (GLUT-2, GLUT-4): Enable glucose uptake by cells',
+        '   • GLUT-2: In liver and pancreas (glucose sensing)',
+        '   • GLUT-4: In muscle and fat (insulin-dependent)',
+      ];
+
+      equations.forEach(eq => {
+        if (yPosition > pageHeight - 20) {
+          pdf.addPage();
+          yPosition = 20;
+        }
+        pdf.text(eq, 20, yPosition);
+        yPosition += 5;
+      });
+
+      // Add new page for parameters
+      pdf.addPage();
+      yPosition = 20;
+
+      // Model Parameters Section
+      pdf.setFontSize(16);
+      pdf.setFont('helvetica', 'bold');
+      pdf.text('Model Parameters (Personalized for Patient)', 20, yPosition);
+      yPosition += 15;
+
+      pdf.setFontSize(12);
+      pdf.setFont('helvetica', 'normal');
+      pdf.text('The following parameters were automatically adjusted based on patient characteristics:', 20, yPosition);
+      yPosition += 10;
+
+      // Key parameter explanations
+      const parameterExplanations = [
+        'Age Factor: Older patients have reduced β-cell function',
+        'BMI Factor: Higher BMI increases insulin resistance and inflammation',
+        'Activity Level: Regular exercise improves insulin sensitivity',
+        'Medications: Each medication has specific effects on glucose metabolism',
+        'Gender: Affects baseline insulin sensitivity and hormone interactions',
+        'Smoking Status: Increases inflammation and insulin resistance',
+        '',
+        'Example Parameter Adjustments:',
+        `• Obesity factor: ${simulationParams.palmitic_factor}x (1.0 = normal, higher = more insulin resistant)`,
+        `• Food factor: ${simulationParams.food_factor}x (represents dietary habits)`,
+        `• Drug dosage: ${simulationParams.drug_dosage} units (GLP-1 agonist equivalent)`,
+      ];
+
+      parameterExplanations.forEach(param => {
+        if (yPosition > pageHeight - 20) {
+          pdf.addPage();
+          yPosition = 20;
+        }
+        pdf.text(param, 20, yPosition);
+        yPosition += 6;
+      });
+
+      // Add recommendations
+      if (simulationResult.recommendations.length > 0) {
+        yPosition += 10;
+        pdf.setFontSize(14);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text('Personalized Recommendations:', 20, yPosition);
+        yPosition += 10;
+
+        pdf.setFontSize(11);
+        pdf.setFont('helvetica', 'normal');
+        simulationResult.recommendations.forEach((rec, index) => {
+          if (yPosition > pageHeight - 20) {
+            pdf.addPage();
+            yPosition = 20;
+          }
+          pdf.text(`${index + 1}. ${rec}`, 20, yPosition);
+          yPosition += 6;
+        });
+      }
+
+      // Save the PDF
+      const fileName = `diabetes_simulation_${patientData.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+      pdf.save(fileName);
+
+    } catch (error) {
+      console.error('PDF generation failed:', error);
+      alert('Failed to generate PDF report. Please try again.');
+    } finally {
+      setExportingPDF(false);
+    }
   };
 
   return (
@@ -294,8 +566,12 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
           </div>
         </div>
         <div className="dashboard-actions">
-          <button className="btn-secondary" onClick={downloadData} disabled={!simulationResult}>
-            📊 Download Data
+          <button 
+            className="btn-secondary" 
+            onClick={generatePDFReport} 
+            disabled={!simulationResult || exportingPDF}
+          >
+            {exportingPDF ? '📄 Generating...' : '📄 Download PDF Report'}
           </button>
           <button className="btn-primary" onClick={runSimulation} disabled={loading}>
             {loading ? 'Running...' : '🔄 Refresh'}
@@ -386,7 +662,7 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
                     }
                   />
                   <span className={`metric-label ${metric}`}>
-                    {metric.charAt(0).toUpperCase() + metric.slice(1)}
+                    {metric.replace('_', '-').charAt(0).toUpperCase() + metric.replace('_', '-').slice(1)}
                   </span>
                 </label>
               ))}
@@ -427,6 +703,7 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
             </div>
           ) : simulationResult ? (
             <Plot
+              ref={plotRef}
               data={createPlotData()}
               layout={getPlotLayout()}
               config={{
@@ -458,18 +735,19 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
             <div className="summary-grid">
               <div className="summary-item">
                 <label>Average Glucose:</label>
-                <span>{(simulationResult.glucose.reduce((a, b) => a + b, 0) / simulationResult.glucose.length).toFixed(1)} mg/dL</span>
+                <span>{simulationResult.simulation_summary.average_glucose} mg/dL</span>
               </div>
               <div className="summary-item">
                 <label>Peak Glucose:</label>
-                <span>{Math.max(...simulationResult.glucose).toFixed(1)} mg/dL</span>
+                <span>{simulationResult.simulation_summary.max_glucose} mg/dL</span>
               </div>
               <div className="summary-item">
                 <label>Glucose Variability:</label>
-                <span>{Math.sqrt(simulationResult.glucose.reduce((sum, val, _, arr) => {
-                  const mean = arr.reduce((a, b) => a + b) / arr.length;
-                  return sum + Math.pow(val - mean, 2);
-                }, 0) / simulationResult.glucose.length).toFixed(1)} mg/dL</span>
+                <span>{simulationResult.simulation_summary.glucose_variability} mg/dL</span>
+              </div>
+              <div className="summary-item">
+                <label>Time in Range:</label>
+                <span>{simulationResult.simulation_summary.time_in_range}%</span>
               </div>
               <div className="summary-item">
                 <label>A1C Estimate:</label>
@@ -483,11 +761,18 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
                   {simulationResult.diagnosis}
                 </span>
               </div>
-              <div className="summary-item">
-                <label>Data Points:</label>
-                <span>{simulationResult.time_points.length}</span>
-              </div>
             </div>
+
+            {simulationResult.recommendations.length > 0 && (
+              <div className="recommendations">
+                <h4>Personalized Recommendations:</h4>
+                <ul>
+                  {simulationResult.recommendations.map((rec, index) => (
+                    <li key={index}>{rec}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       )}

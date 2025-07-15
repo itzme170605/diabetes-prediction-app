@@ -22,9 +22,13 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
     medications: [],
     fasting_glucose: null,
     a1c_level: null,
+    activity_level: 'moderate',
+    smoking_status: 'non_smoker',
+    family_history: false,
   });
 
   const [showModal, setShowModal] = useState(true);
+  const [currentMedication, setCurrentMedication] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,15 +38,49 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
+    
+    if (type === 'checkbox') {
+      const checkbox = e.target as HTMLInputElement;
+      setFormData(prev => ({
+        ...prev,
+        [name]: checkbox.checked
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: type === 'number' ? parseFloat(value) || 0 : value
+      }));
+    }
+  };
+
+  const addMedication = () => {
+    if (currentMedication.trim() && !formData.medications.includes(currentMedication.trim())) {
+      setFormData(prev => ({
+        ...prev,
+        medications: [...prev.medications, currentMedication.trim()]
+      }));
+      setCurrentMedication('');
+    }
+  };
+
+  const removeMedication = (medication: string) => {
     setFormData(prev => ({
       ...prev,
-      [name]: type === 'number' ? parseFloat(value) || 0 : value
+      medications: prev.medications.filter(med => med !== medication)
     }));
   };
 
   const calculateBMI = () => {
     const heightM = formData.height / 100;
     return (formData.weight / (heightM * heightM)).toFixed(1);
+  };
+
+  const getBMICategory = () => {
+    const bmi = parseFloat(calculateBMI());
+    if (bmi < 18.5) return 'Underweight';
+    if (bmi < 25) return 'Normal';
+    if (bmi < 30) return 'Overweight';
+    return 'Obese';
   };
 
   if (!showModal) return null;
@@ -97,7 +135,6 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
                 >
                   <option value="male">Male</option>
                   <option value="female">Female</option>
-                  <option value="other">Other</option>
                 </select>
               </div>
             </div>
@@ -136,9 +173,9 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
               </div>
               
               <div className="form-group">
-                <label>BMI</label>
+                <label>BMI & Category</label>
                 <div className="bmi-display">
-                  {calculateBMI()} kg/m²
+                  {calculateBMI()} kg/m² ({getBMICategory()})
                 </div>
               </div>
             </div>
@@ -197,6 +234,35 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
             <h3>Lifestyle Factors</h3>
             <div className="form-grid">
               <div className="form-group">
+                <label htmlFor="activity_level">Activity Level</label>
+                <select
+                  id="activity_level"
+                  name="activity_level"
+                  value={formData.activity_level || 'moderate'}
+                  onChange={handleInputChange}
+                >
+                  <option value="sedentary">Sedentary (little to no exercise)</option>
+                  <option value="light">Light (1-3 days/week)</option>
+                  <option value="moderate">Moderate (3-5 days/week)</option>
+                  <option value="active">Very Active (6-7 days/week)</option>
+                </select>
+              </div>
+              
+              <div className="form-group">
+                <label htmlFor="smoking_status">Smoking Status</label>
+                <select
+                  id="smoking_status"
+                  name="smoking_status"
+                  value={formData.smoking_status || 'non_smoker'}
+                  onChange={handleInputChange}
+                >
+                  <option value="non_smoker">Non-smoker</option>
+                  <option value="former_smoker">Former smoker</option>
+                  <option value="smoker">Current smoker</option>
+                </select>
+              </div>
+
+              <div className="form-group">
                 <label htmlFor="meal_frequency">Meals per Day</label>
                 <input
                   type="number"
@@ -208,20 +274,72 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
                   max="10"
                 />
               </div>
-              
-              <div className="form-group">
-                <label htmlFor="exercise_level">Exercise Level</label>
-                <select
-                  id="exercise_level"
-                  name="exercise_level"
-                  value={formData.exercise_level || 'moderate'}
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="family_history" className="checkbox-label">
+                <input
+                  type="checkbox"
+                  id="family_history"
+                  name="family_history"
+                  checked={formData.family_history || false}
                   onChange={handleInputChange}
-                >
-                  <option value="sedentary">Sedentary</option>
-                  <option value="light">Light</option>
-                  <option value="moderate">Moderate</option>
-                  <option value="vigorous">Vigorous</option>
-                </select>
+                />
+                Family history of diabetes
+              </label>
+            </div>
+          </div>
+
+          <div className="form-section">
+            <h3>Medications</h3>
+            <div className="medication-input">
+              <input
+                type="text"
+                value={currentMedication}
+                onChange={(e) => setCurrentMedication(e.target.value)}
+                placeholder="Enter medication name"
+                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addMedication())}
+              />
+              <button type="button" onClick={addMedication} className="btn-secondary">
+                Add
+              </button>
+            </div>
+            
+            <div className="medication-list">
+              {formData.medications.map((medication, index) => (
+                <span key={index} className="medication-tag">
+                  {medication}
+                  <button
+                    type="button"
+                    onClick={() => removeMedication(medication)}
+                    className="remove-medication"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+            </div>
+
+            <div className="common-medications">
+              <p>Common diabetes medications:</p>
+              <div className="medication-suggestions">
+                {['Metformin', 'Insulin', 'GLP-1 agonist', 'Semaglutide', 'Ozempic'].map(med => (
+                  <button
+                    key={med}
+                    type="button"
+                    className="btn-suggestion"
+                    onClick={() => {
+                      if (!formData.medications.includes(med)) {
+                        setFormData(prev => ({
+                          ...prev,
+                          medications: [...prev.medications, med]
+                        }));
+                      }
+                    }}
+                  >
+                    {med}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
