@@ -1,1 +1,35 @@
 2025-07-14 20:45:15,976 - __main__ - INFO - Starting development server...
+2025-07-14 20:47:05,229 - __main__ - INFO - Starting development server...
+2025-07-14 20:47:06,399 - main - INFO - Starting Advanced Diabetes Simulation API v2.0.0
+2025-07-14 20:47:06,399 - main - INFO - All systems initialized successfully
+2025-07-14 20:47:06,443 - watchfiles.main - INFO - 5 changes detected
+2025-07-14 20:47:41,895 - main - INFO - Request: GET http://localhost:8000/
+2025-07-14 20:47:41,899 - main - INFO - Response: 200 (0.005s)
+2025-07-14 20:47:41,903 - main - INFO - Request: GET http://localhost:8000/
+2025-07-14 20:47:41,904 - main - INFO - Response: 200 (0.002s)
+2025-07-14 20:47:49,411 - main - INFO - Request: OPTIONS http://localhost:8000/api/simulation/run
+2025-07-14 20:47:49,416 - main - INFO - Response: 200 (0.005s)
+2025-07-14 20:47:49,420 - main - INFO - Request: OPTIONS http://localhost:8000/api/simulation/run
+2025-07-14 20:47:49,423 - main - INFO - Response: 200 (0.004s)
+2025-07-14 20:47:49,427 - main - INFO - Request: POST http://localhost:8000/api/simulation/run
+2025-07-14 20:47:49,428 - main - INFO - Response: 404 (0.002s)
+2025-07-14 20:47:49,431 - main - INFO - Request: POST http://localhost:8000/api/simulation/run
+2025-07-14 20:47:49,432 - main - INFO - Response: 404 (0.002s)
+2025-07-14 20:47:51,491 - main - INFO - Request: POST http://localhost:8000/api/simulation/run
+2025-07-14 20:47:51,498 - main - INFO - Response: 404 (0.008s)
+2025-07-14 20:51:40,737 - main - INFO - Request: POST http://localhost:8000/api/simulation/run
+2025-07-14 20:51:40,738 - main - INFO - Response: 404 (0.002s)
+2025-07-14 20:55:19,958 - main - INFO - Shutting down Advanced Diabetes Simulation API
+2025-07-14 20:57:30,540 - __main__ - INFO - Starting development server...
+2025-07-14 20:57:31,298 - main - INFO - Starting Advanced Diabetes Simulation API v2.0.0
+2025-07-14 20:57:31,299 - main - INFO - All systems initialized successfully
+2025-07-14 20:57:52,229 - main - INFO - Request: GET http://localhost:8000/health
+2025-07-14 20:57:52,234 - main - INFO - Response: 200 (0.005s)
+2025-07-14 20:57:52,240 - main - INFO - Request: GET http://localhost:8000/health
+2025-07-14 20:57:52,243 - main - INFO - Response: 200 (0.003s)
+2025-07-14 20:57:58,695 - main - INFO - Request: OPTIONS http://localhost:8000/api/v1/simulation/run
+2025-07-14 20:57:58,703 - main - INFO - Request: OPTIONS http://localhost:8000/api/v1/simulation/run
+2025-07-14 20:57:58,704 - main - INFO - Response: 200 (0.009s)
+2025-07-14 20:57:58,706 - main - INFO - Response: 200 (0.003s)
+2025-07-14 20:57:58,709 - main - INFO - Request: POST http://localhost:8000/api/v1/simulation/run
+2025-07-14 20:57:58,712 - main - INFO - Request: POST http://localhost:8000/api/v1/simulation/run
