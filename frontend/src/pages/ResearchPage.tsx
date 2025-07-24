@@ -373,36 +373,36 @@ const ResearchPage: React.FC = () => {
                   </div>
 
                   {/* SVG Arrows */}
-                  <svg className="connection-svg" viewBox="0 0 1200 600">
+                  <svg className="connection-svg" viewBox="0 0 800 600">
                     {/* Food to GLP-1 */}
-                    <path d="M 190 120 L 270 120" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
+                    <path d="M 120 100 L 200 100" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
                     
                     {/* GLP-1 to Beta cells */}
-                    <path d="M 410 120 L 490 120" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
+                    <path d="M 280 100 L 360 100" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
                     
                     {/* Beta cells to Insulin */}
-                    <path d="M 630 120 L 710 120" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
+                    <path d="M 440 100 L 520 100" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
                     
                     {/* Insulin to GLUT-4 */}
-                    <path d="M 850 120 L 930 120" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
+                    <path d="M 600 100 L 680 100" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
                     
                     {/* GLUT-4 to Glucose */}
-                    <path d="M 1000 180 L 1000 250" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
+                    <path d="M 680 150 L 680 200" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
                     
                     {/* Glucose to Liver */}
-                    <path d="M 1000 350 L 1000 420" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
+                    <path d="M 680 280 L 680 360" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
                     
                     {/* Alpha cells to Glucagon */}
-                    <path d="M 630 480 L 710 480" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
+                    <path d="M 440 450 L 520 450" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
                     
                     {/* Glucagon to GLUT-2 */}
-                    <path d="M 850 480 L 930 480" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
+                    <path d="M 600 450 L 680 450" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
                     
                     {/* GLUT-2 to Glucose (reverse) */}
-                    <path d="M 1000 430 C 1050 430 1050 300 1000 300" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
+                    <path d="M 680 400 C 720 400 720 240 680 240" stroke="#e67e22" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
                     
                     {/* GLP-1 inhibits Alpha cells */}
-                    <path d="M 340 180 C 340 350 490 350 490 430" stroke="#3498db" strokeWidth="3" fill="none" markerEnd="url(#inhibition)" strokeDasharray="5,5"/>
+                    <path d="M 240 150 C 240 300 340 300 340 400" stroke="#3498db" strokeWidth="3" fill="none" markerEnd="url(#inhibition)" strokeDasharray="5,5"/>
                     
                     {/* Define arrow markers */}
                     <defs>
@@ -498,45 +498,45 @@ const ResearchPage: React.FC = () => {
                   </div>
 
                   {/* SVG Arrows for Obesity Pathway */}
-                  <svg className="connection-svg" viewBox="0 0 1200 600">
+                  <svg className="connection-svg" viewBox="0 0 800 600">
                     {/* Food to Obesity */}
-                    <path d="M 190 120 L 270 120" stroke="#f39c12" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-warning)"/>
+                    <path d="M 120 100 L 200 100" stroke="#f39c12" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-warning)"/>
                     
                     {/* Obesity to NEFA */}
-                    <path d="M 410 120 L 490 120" stroke="#e74c3c" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-danger)"/>
+                    <path d="M 280 100 L 360 100" stroke="#e74c3c" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-danger)"/>
                     
                     {/* NEFA to Palmitic */}
-                    <path d="M 630 120 L 710 120" stroke="#e74c3c" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-danger)"/>
+                    <path d="M 440 100 L 520 100" stroke="#e74c3c" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-danger)"/>
                     
                     {/* NEFA to Oleic */}
-                    <path d="M 560 180 L 560 250" stroke="#27ae60" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-success)"/>
+                    <path d="M 400 150 L 400 200" stroke="#27ae60" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-success)"/>
                     
                     {/* Palmitic to TNF-α */}
-                    <path d="M 850 120 L 930 120" stroke="#e74c3c" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-danger)"/>
+                    <path d="M 600 100 L 680 100" stroke="#e74c3c" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-danger)"/>
                     
                     {/* TNF-α to GLUT-4 (inhibition) */}
-                    <path d="M 1000 180 C 1050 200 1050 380 850 400" stroke="#e74c3c" strokeWidth="3" fill="none" markerEnd="url(#inhibition-danger)" strokeDasharray="5,5"/>
+                    <path d="M 680 150 C 720 200 720 350 680 400" stroke="#e74c3c" strokeWidth="3" fill="none" markerEnd="url(#inhibition-danger)" strokeDasharray="5,5"/>
                     
                     {/* Food to GLP-1 */}
-                    <path d="M 120 180 L 120 300" stroke="#3498db" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
+                    <path d="M 80 150 L 80 250" stroke="#3498db" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
                     
                     {/* GLP-1 to Beta cells */}
-                    <path d="M 190 340 L 270 340" stroke="#3498db" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
+                    <path d="M 160 250 L 240 250" stroke="#3498db" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
                     
                     {/* Palmitic to Beta cells (toxicity) */}
-                    <path d="M 780 180 C 780 260 340 260 340 300" stroke="#e74c3c" strokeWidth="3" fill="none" markerEnd="url(#inhibition-danger)" strokeDasharray="5,5"/>
+                    <path d="M 520 150 C 520 200 320 200 320 220" stroke="#e74c3c" strokeWidth="3" fill="none" markerEnd="url(#inhibition-danger)" strokeDasharray="5,5"/>
                     
                     {/* Beta cells to Insulin */}
-                    <path d="M 410 340 L 490 340" stroke="#3498db" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
+                    <path d="M 320 280 L 400 280" stroke="#3498db" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
                     
                     {/* Insulin to GLUT-4 */}
-                    <path d="M 630 340 L 710 340" stroke="#3498db" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
+                    <path d="M 480 280 L 600 280" stroke="#3498db" strokeWidth="3" fill="none" markerEnd="url(#arrowhead)"/>
                     
                     {/* GLUT-4 to Glucose (impaired) */}
-                    <path d="M 780 400 L 850 400" stroke="#f39c12" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-warning)" strokeDasharray="5,5"/>
+                    <path d="M 640 320 L 640 400" stroke="#f39c12" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-warning)" strokeDasharray="5,5"/>
                     
                     {/* Oleic to TNF-α (inhibition) */}
-                    <path d="M 630 280 C 780 280 780 180 930 180" stroke="#27ae60" strokeWidth="3" fill="none" markerEnd="url(#inhibition-success)" strokeDasharray="5,5"/>
+                    <path d="M 440 200 C 500 200 500 150 600 150" stroke="#27ae60" strokeWidth="3" fill="none" markerEnd="url(#inhibition-success)" strokeDasharray="5,5"/>
                     
                     {/* Define arrow markers */}
                     <defs>
@@ -654,42 +654,42 @@ const ResearchPage: React.FC = () => {
                   </div>
 
                   {/* SVG Arrows for Treatment Pathway */}
-                  <svg className="connection-svg" viewBox="0 0 1200 600">
+                  <svg className="connection-svg" viewBox="0 0 800 600">
                     {/* Drug to GLP-1 */}
-                    <path d="M 190 120 L 270 120" stroke="#1abc9c" strokeWidth="4" fill="none" markerEnd="url(#arrowhead-treatment)"/>
+                    <path d="M 120 100 L 200 100" stroke="#1abc9c" strokeWidth="4" fill="none" markerEnd="url(#arrowhead-treatment)"/>
                     
                     {/* Drug to Food Intake (reduction) */}
-                    <path d="M 120 180 L 120 250" stroke="#1abc9c" strokeWidth="3" fill="none" markerEnd="url(#inhibition-treatment)" strokeDasharray="5,5"/>
+                    <path d="M 80 150 L 80 250" stroke="#1abc9c" strokeWidth="3" fill="none" markerEnd="url(#inhibition-treatment)" strokeDasharray="5,5"/>
                     
                     {/* Enhanced GLP-1 to Beta cells */}
-                    <path d="M 410 120 L 490 120" stroke="#2ecc71" strokeWidth="4" fill="none" markerEnd="url(#arrowhead-success)"/>
+                    <path d="M 280 100 L 360 100" stroke="#2ecc71" strokeWidth="4" fill="none" markerEnd="url(#arrowhead-success)"/>
                     
                     {/* Beta cells to Insulin */}
-                    <path d="M 630 120 L 710 120" stroke="#2ecc71" strokeWidth="4" fill="none" markerEnd="url(#arrowhead-success)"/>
+                    <path d="M 440 100 L 520 100" stroke="#2ecc71" strokeWidth="4" fill="none" markerEnd="url(#arrowhead-success)"/>
                     
                     {/* Insulin to GLUT-4 */}
-                    <path d="M 850 120 L 930 120" stroke="#2ecc71" strokeWidth="4" fill="none" markerEnd="url(#arrowhead-success)"/>
+                    <path d="M 600 100 L 680 100" stroke="#2ecc71" strokeWidth="4" fill="none" markerEnd="url(#arrowhead-success)"/>
                     
                     {/* GLUT-4 to Glucose */}
-                    <path d="M 1000 180 L 1000 250" stroke="#2ecc71" strokeWidth="4" fill="none" markerEnd="url(#arrowhead-success)"/>
+                    <path d="M 680 150 L 680 200" stroke="#2ecc71" strokeWidth="4" fill="none" markerEnd="url(#arrowhead-success)"/>
                     
                     {/* Reduced Food to Weight Loss */}
-                    <path d="M 190 300 L 270 300" stroke="#2ecc71" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-success)"/>
+                    <path d="M 120 300 L 200 300" stroke="#2ecc71" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-success)"/>
                     
                     {/* Weight Loss to Reduced NEFA */}
-                    <path d="M 410 300 L 490 300" stroke="#2ecc71" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-success)"/>
+                    <path d="M 280 300 L 360 300" stroke="#2ecc71" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-success)"/>
                     
                     {/* Reduced NEFA to Reduced Palmitic */}
-                    <path d="M 630 300 L 710 300" stroke="#2ecc71" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-success)"/>
+                    <path d="M 440 300 L 520 300" stroke="#2ecc71" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-success)"/>
                     
                     {/* Reduced Palmitic to Reduced TNF-α */}
-                    <path d="M 850 300 L 930 300" stroke="#2ecc71" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-success)"/>
+                    <path d="M 600 300 L 680 300" stroke="#2ecc71" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-success)"/>
                     
                     {/* Reduced TNF-α to Restored GLUT-4 */}
-                    <path d="M 1000 250 C 1050 200 1050 160 1000 160" stroke="#2ecc71" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-success)"/>
+                    <path d="M 680 250 C 720 200 720 150 680 120" stroke="#2ecc71" strokeWidth="3" fill="none" markerEnd="url(#arrowhead-success)"/>
                     
                     {/* Enhanced GLP-1 to Suppressed Glucagon */}
-                    <path d="M 340 180 C 340 480 490 480 490 450" stroke="#1abc9c" strokeWidth="3" fill="none" markerEnd="url(#inhibition-treatment)" strokeDasharray="5,5"/>
+                    <path d="M 240 150 C 240 400 320 400 320 450" stroke="#1abc9c" strokeWidth="3" fill="none" markerEnd="url(#inhibition-treatment)" strokeDasharray="5,5"/>
                     
                     {/* Define treatment arrow markers */}
                     <defs>

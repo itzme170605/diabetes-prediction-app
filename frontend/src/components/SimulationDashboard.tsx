@@ -1,21 +1,34 @@
-// src/components/SimulationDashboard.tsx
+// src/components/EnhancedSimulationDashboard.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import Plot from 'react-plotly.js';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { PatientData, SimulationResult, SimulationParams, ODEParameters } from '../types/diabetes';
+import { PatientData, SimulationResult } from '../types/diabetes';
 import { simulationAPI } from '../utils/api';
 import './SimulationDashboard.css';
 
-interface SimulationDashboardProps {
+interface SimulationParams {
+  patient_data: PatientData;
+  simulation_hours: number;
+  food_factor: number;
+  palmitic_factor: number;
+  drug_dosage: number;
+  show_optimal: boolean;
+  meal_times: number[];
+  meal_factors: number[];
+}
+
+interface EnhancedSimulationDashboardProps {
   patientData: PatientData;
 }
 
-const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }) => {
+const EnhancedSimulationDashboard: React.FC<EnhancedSimulationDashboardProps> = ({ patientData }) => {
   const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(null);
+  const [comparisonResults, setComparisonResults] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [exportingPDF, setExportingPDF] = useState(false);
+  const [activeAnalysis, setActiveAnalysis] = useState<'basic' | 'meals' | 'progression' | 'treatment'>('basic');
   const plotRef = useRef<any>(null);
   
   const [selectedMetrics, setSelectedMetrics] = useState({
@@ -35,19 +48,21 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
     drug_dosage: 0.0,
     show_optimal: true,
     meal_times: [0, 6, 12, 18],
-    exercise_times: [],
+    meal_factors: [1.0, 1.0, 2.0, 0.0], // breakfast, lunch, dinner, snack
   });
 
   useEffect(() => {
-    runSimulation();
+    runBasicSimulation();
   }, []);
 
-  const runSimulation = async () => {
+  const runBasicSimulation = async () => {
     setLoading(true);
     setError(null);
+    setActiveAnalysis('basic');
     try {
       const result = await simulationAPI.runSimulation(simulationParams);
       setSimulationResult(result);
+      setComparisonResults(null);
     } catch (error: any) {
       setError(error.message);
       console.error('Simulation failed:', error);
@@ -55,13 +70,80 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
     setLoading(false);
   };
 
-  const handleParameterChange = (key: keyof SimulationParams, value: any) => {
-    const newParams = { ...simulationParams, [key]: value };
-    setSimulationParams(newParams);
+  const runMealComparison = async () => {
+    setLoading(true);
+    setError(null);
+    setActiveAnalysis('meals');
+    try {
+      const result = await simulationAPI.compareMealPatterns(simulationParams);
+      setComparisonResults(result);
+      setSimulationResult(null);
+    } catch (error: any) {
+      setError(error.message);
+      console.error('Meal comparison failed:', error);
+    }
+    setLoading(false);
   };
 
-  const debouncedSimulation = () => {
-    setTimeout(runSimulation, 300);
+  const runObesityProgression = async () => {
+    setLoading(true);
+    setError(null);
+    setActiveAnalysis('progression');
+    try {
+      const result = await simulationAPI.simulateObesityProgression(simulationParams);
+      setComparisonResults(result);
+      setSimulationResult(null);
+    } catch (error: any) {
+      setError(error.message);
+      console.error('Obesity progression simulation failed:', error);
+    }
+    setLoading(false);
+  };
+
+  const runTreatmentAnalysis = async () => {
+    setLoading(true);
+    setError(null);
+    setActiveAnalysis('treatment');
+    try {
+      const result = await simulationAPI.analyzeDrugTreatment(simulationParams);
+      setComparisonResults(result);
+      setSimulationResult(null);
+    } catch (error: any) {
+      setError(error.message);
+      console.error('Treatment analysis failed:', error);
+    }
+    setLoading(false);
+  };
+
+  const handleParameterChange = (key: keyof SimulationParams, value: any) => {
+    setSimulationParams(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleMealFactorChange = (index: number, value: number) => {
+    const newMealFactors = [...simulationParams.meal_factors];
+    newMealFactors[index] = value;
+    setSimulationParams(prev => ({ ...prev, meal_factors: newMealFactors }));
+  };
+
+  const setMealPattern = (pattern: 'balanced' | 'light-heavy' | 'heavy-light' | 'small-frequent') => {
+    const patterns = {
+      'balanced': [1.0, 1.0, 1.0, 0.0],
+      'light-heavy': [0.5, 1.0, 2.0, 0.0],
+      'heavy-light': [2.0, 1.0, 0.5, 0.0],
+      'small-frequent': [0.8, 0.8, 0.8, 0.6]
+    };
+    setSimulationParams(prev => ({ ...prev, meal_factors: patterns[pattern] }));
+  };
+
+  const setScenario = (scenario: 'normal' | 'high-risk' | 'treatment' | 'optimal') => {
+    const scenarios = {
+      'normal': { food_factor: 1.0, palmitic_factor: 1.0, drug_dosage: 0.0 },
+      'high-risk': { food_factor: 2.0, palmitic_factor: 2.5, drug_dosage: 0.0 },
+      'treatment': { food_factor: 1.2, palmitic_factor: 1.5, drug_dosage: 1.0 },
+      'optimal': { food_factor: 0.8, palmitic_factor: 0.7, drug_dosage: 0.5 }
+    };
+    const params = scenarios[scenario];
+    setSimulationParams(prev => ({ ...prev, ...params }));
   };
 
   const calculateBMI = () => {
@@ -75,7 +157,7 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
     const traces: any[] = [];
     const { time_points, glucose, insulin, glucagon, glp1, beta_cells, alpha_cells, optimal_glucose } = simulationResult;
 
-    // Glucose trace
+    // Enhanced glucose trace with reference ranges
     if (selectedMetrics.glucose) {
       traces.push({
         x: time_points,
@@ -83,11 +165,10 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
         type: 'scatter',
         mode: 'lines',
         name: 'Blood Glucose',
-        line: { color: '#e74c3c', width: 3 },
+        line: { color: '#f76902', width: 3 }, // RIT Orange
         hovertemplate: 'Time: %{x:.1f}h<br>Glucose: %{y:.1f} mg/dL<extra></extra>',
       });
 
-      // Optimal glucose trace
       if (optimal_glucose && simulationParams.show_optimal) {
         traces.push({
           x: time_points,
@@ -101,7 +182,7 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
       }
     }
 
-    // Insulin trace (secondary y-axis)
+    // Enhanced hormone traces with secondary axes
     if (selectedMetrics.insulin) {
       traces.push({
         x: time_points,
@@ -109,13 +190,12 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
         type: 'scatter',
         mode: 'lines',
         name: 'Insulin',
-        line: { color: '#3498db', width: 3 },
+        line: { color: '#58595b', width: 3 }, // RIT Gray
         yaxis: 'y2',
         hovertemplate: 'Time: %{x:.1f}h<br>Insulin: %{y:.1f} pmol/L<extra></extra>',
       });
     }
 
-    // Glucagon trace
     if (selectedMetrics.glucagon) {
       traces.push({
         x: time_points,
@@ -129,7 +209,6 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
       });
     }
 
-    // GLP-1 trace
     if (selectedMetrics.glp1) {
       traces.push({
         x: time_points,
@@ -137,13 +216,12 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
         type: 'scatter',
         mode: 'lines',
         name: 'GLP-1',
-        line: { color: '#f39c12', width: 2 },
+        line: { color: '#e74c3c', width: 2 },
         yaxis: 'y4',
         hovertemplate: 'Time: %{x:.1f}h<br>GLP-1: %{y:.1f} pmol/L<extra></extra>',
       });
     }
 
-    // Beta cells trace
     if (selectedMetrics.beta_cells) {
       traces.push({
         x: time_points,
@@ -157,7 +235,6 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
       });
     }
 
-    // Alpha cells trace
     if (selectedMetrics.alpha_cells) {
       traces.push({
         x: time_points,
@@ -165,7 +242,7 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
         type: 'scatter',
         mode: 'lines',
         name: 'α-cells',
-        line: { color: '#e67e22', width: 2 },
+        line: { color: '#ff8c00', width: 2 }, // RIT Secondary Orange
         yaxis: 'y6',
         hovertemplate: 'Time: %{x:.1f}h<br>α-cells: %{y:.1f}<extra></extra>',
       });
@@ -182,7 +259,7 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
       yAxes.yaxis = {
         title: 'Glucose (mg/dL)',
         side: 'left',
-        color: '#e74c3c',
+        color: '#f76902', // RIT Orange
         showgrid: true,
         gridcolor: '#f0f0f0',
       };
@@ -193,7 +270,7 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
         title: 'Insulin (pmol/L)',
         side: 'right',
         overlaying: 'y',
-        color: '#3498db',
+        color: '#58595b', // RIT Gray
         showgrid: false,
         position: rightPosition,
       };
@@ -218,7 +295,7 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
         side: 'right',
         overlaying: 'y',
         position: rightPosition,
-        color: '#f39c12',
+        color: '#e74c3c',
         showgrid: false,
       };
       rightPosition -= 0.05;
@@ -242,72 +319,58 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
         side: 'right',
         overlaying: 'y',
         position: rightPosition,
-        color: '#e67e22',
+        color: '#ff8c00',
         showgrid: false,
       };
     }
 
-    // Add meal time annotations
-    const mealTimes = simulationParams.meal_times?.map(mealTime => ({
+    // Enhanced meal annotations with RIT branding
+    const mealLabels = ['🥞', '🍽️', '🍖', '🍪'];
+    const mealTimes = simulationParams.meal_times?.map((mealTime, index) => ({
       x: mealTime,
       y: 0,
       xref: 'x',
       yref: 'paper',
-      text: '🍽️',
+      text: `${mealLabels[index] || '🍽️'}<br>${simulationParams.meal_factors[index]?.toFixed(1)}x`,
       showarrow: true,
       arrowhead: 2,
       arrowsize: 1,
       arrowwidth: 2,
-      arrowcolor: '#e67e22',
+      arrowcolor: '#f76902', // RIT Orange
       ax: 0,
-      ay: -30,
-      font: { size: 16 }
-    })) || [];
-
-    // Add exercise time annotations
-    const exerciseTimes = simulationParams.exercise_times?.map(exerciseTime => ({
-      x: exerciseTime,
-      y: 0,
-      xref: 'x',
-      yref: 'paper',
-      text: '🏃',
-      showarrow: true,
-      arrowhead: 2,
-      arrowsize: 1,
-      arrowwidth: 2,
-      arrowcolor: '#2ecc71',
-      ax: 0,
-      ay: -30,
-      font: { size: 16 }
+      ay: -40,
+      font: { size: 12, color: '#58595b' }
     })) || [];
 
     return {
       title: {
-        text: `Glucose Dynamics Simulation - ${patientData.name}`,
-        font: { size: 20, color: '#333' },
+        text: `RIT Enhanced Glucose Dynamics - ${patientData.name} (${activeAnalysis.toUpperCase()})`,
+        font: { size: 20, color: '#58595b', family: 'Arial, sans-serif' }, // RIT Gray
       },
       xaxis: {
         title: 'Time (hours)',
         showgrid: true,
         gridcolor: '#f0f0f0',
         range: [0, simulationParams.simulation_hours],
+        color: '#58595b',
       },
       ...yAxes,
       legend: {
         orientation: 'h',
-        y: -0.15,
+        y: -0.2,
         x: 0.5,
         xanchor: 'center',
+        font: { color: '#58595b' }
       },
-      margin: { l: 60, r: 120, t: 80, b: 100 },
-      height: 500,
+      margin: { l: 60, r: 140, t: 80, b: 120 },
+      height: 600,
       showlegend: true,
       hovermode: 'x unified',
       plot_bgcolor: 'white',
       paper_bgcolor: 'white',
-      annotations: [...mealTimes, ...exerciseTimes],
+      annotations: mealTimes,
       shapes: [
-        // Normal glucose range shading
+        // Normal glucose range (RIT-themed)
         {
           type: 'rect',
           xref: 'x',
@@ -319,44 +382,67 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
           fillcolor: 'rgba(39, 174, 96, 0.1)',
           line: { width: 0 },
           layer: 'below',
+        },
+        // Prediabetic range
+        {
+          type: 'rect',
+          xref: 'x',
+          yref: 'y',
+          x0: 0,
+          x1: simulationParams.simulation_hours,
+          y0: 140,
+          y1: 200,
+          fillcolor: 'rgba(247, 105, 2, 0.1)', // RIT Orange tint
+          line: { width: 0 },
+          layer: 'below',
         }
       ],
     };
   };
 
-  const generatePDFReport = async () => {
-    if (!simulationResult) return;
+  const generateEnhancedPDFReport = async () => {
+    if (!simulationResult && !comparisonResults) return;
 
     setExportingPDF(true);
     try {
-      // Create a new jsPDF instance
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pageWidth = pdf.internal.pageSize.getWidth();
-      const pageHeight = pdf.internal.pageSize.getHeight();
       let yPosition = 20;
 
-      // Title
-      pdf.setFontSize(20);
+      // RIT Header
+      pdf.setFontSize(24);
       pdf.setFont('helvetica', 'bold');
-      pdf.text('Diabetes Simulation Report', pageWidth / 2, yPosition, { align: 'center' });
-      yPosition += 15;
+      pdf.setTextColor(247, 105, 2); // RIT Orange
+      pdf.text('RIT Diabetes Simulation Report', pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 8;
+      
+      pdf.setFontSize(12);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setTextColor(88, 89, 91); // RIT Gray
+      pdf.text('Rochester Institute of Technology', pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 4;
+      
+      pdf.setTextColor(0, 0, 0);
+      pdf.text(`Analysis Type: ${activeAnalysis.toUpperCase()} | Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, yPosition, { align: 'center' });
+      yPosition += 20;
 
       // Patient Information
       pdf.setFontSize(16);
-      pdf.text('Patient Information', 20, yPosition);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setTextColor(247, 105, 2); // RIT Orange
+      pdf.text('Patient Profile', 20, yPosition);
       yPosition += 10;
 
       pdf.setFontSize(12);
       pdf.setFont('helvetica', 'normal');
+      pdf.setTextColor(0, 0, 0);
       const patientInfo = [
-        `Name: ${simulationResult.patient_info.name}`,
-        `Age: ${simulationResult.patient_info.age} years`,
-        `Gender: ${simulationResult.patient_info.gender}`,
-        `BMI: ${simulationResult.patient_info.bmi} kg/m² (${simulationResult.patient_info.bmi_category})`,
-        `Diabetes Type: ${simulationResult.patient_info.diabetes_type}`,
-        `Diabetes Risk: ${simulationResult.patient_info.diabetes_risk}`,
-        `Activity Level: ${simulationResult.patient_info.activity_level}`,
-        `Medications: ${simulationResult.patient_info.medications.join(', ') || 'None'}`
+        `Name: ${patientData.name}`,
+        `Age: ${patientData.age} years | Gender: ${patientData.gender}`,
+        `BMI: ${calculateBMI()} kg/m² | Activity: ${patientData.activity_level}`,
+        `Diabetes Status: ${patientData.diabetes_type || 'Auto-detected'}`,
+        `Medications: ${patientData.medications.join(', ') || 'None'}`,
+        `Family History: ${patientData.family_history ? 'Yes' : 'No'} | Smoking: ${patientData.smoking_status}`
       ];
 
       patientInfo.forEach(info => {
@@ -364,43 +450,63 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
         yPosition += 6;
       });
 
-      yPosition += 10;
+      yPosition += 15;
 
-      // Simulation Results Summary
-      pdf.setFontSize(16);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Simulation Results', 20, yPosition);
-      yPosition += 10;
+      // Analysis-specific content
+      if (simulationResult) {
+        // Basic simulation results
+        pdf.setFontSize(16);
+        pdf.setFont('helvetica', 'bold');
+        pdf.setTextColor(247, 105, 2); // RIT Orange
+        pdf.text('Simulation Results', 20, yPosition);
+        yPosition += 10;
 
-      pdf.setFontSize(12);
-      pdf.setFont('helvetica', 'normal');
-      const simulationSummary = [
-        `Estimated A1C: ${simulationResult.simulation_summary.estimated_a1c}%`,
-        `Diagnosis: ${simulationResult.diagnosis}`,
-        `Average Glucose: ${simulationResult.simulation_summary.average_glucose} mg/dL`,
-        `Glucose Range: ${simulationResult.simulation_summary.min_glucose} - ${simulationResult.simulation_summary.max_glucose} mg/dL`,
-        `Glucose Variability: ${simulationResult.simulation_summary.glucose_variability} mg/dL`,
-        `Time in Target Range (70-180 mg/dL): ${simulationResult.simulation_summary.time_in_range}%`,
-        `Time Above Range: ${simulationResult.simulation_summary.time_above_range}%`,
-        `Time Below Range: ${simulationResult.simulation_summary.time_below_range}%`
-      ];
+        const results = [
+          `A1C Estimate: ${simulationResult.a1c_estimate}% (${simulationResult.diagnosis})`,
+          `Average Glucose: ${simulationResult.simulation_summary.average_glucose} mg/dL`,
+          `Glucose Variability: ${simulationResult.simulation_summary.glucose_variability} mg/dL`,
+          `Time in Range (70-180): ${simulationResult.simulation_summary.time_in_range}%`,
+          `Dawn Phenomenon: ${simulationResult.glucose_metrics?.dawn_phenomenon || 'N/A'} mg/dL`,
+          `Glucose Stability Score: ${simulationResult.glucose_metrics?.glucose_stability?.stability_score || 'N/A'}/100`
+        ];
 
-      simulationSummary.forEach(info => {
-        pdf.text(info, 20, yPosition);
-        yPosition += 6;
-      });
+        pdf.setFontSize(12);
+        pdf.setFont('helvetica', 'normal');
+        pdf.setTextColor(0, 0, 0);
+        results.forEach(result => {
+          pdf.text(result, 20, yPosition);
+          yPosition += 6;
+        });
 
-      // Add new page for chart
+      } else if (comparisonResults) {
+        // Comparison results
+        pdf.setFontSize(16);
+        pdf.setFont('helvetica', 'bold');
+        pdf.setTextColor(247, 105, 2); // RIT Orange
+        pdf.text(`${activeAnalysis.charAt(0).toUpperCase() + activeAnalysis.slice(1)} Analysis Results`, 20, yPosition);
+        yPosition += 10;
+
+        if (comparisonResults.comparison_metrics) {
+          pdf.setFontSize(12);
+          pdf.setFont('helvetica', 'normal');
+          pdf.setTextColor(0, 0, 0);
+          comparisonResults.comparison_metrics.forEach((metric: any, index: number) => {
+            pdf.text(`${index + 1}. ${metric.scenario}: A1C ${metric.a1c_estimate}% (${metric.a1c_change >= 0 ? '+' : ''}${metric.a1c_change})`, 20, yPosition);
+            yPosition += 6;
+          });
+        }
+      }
+
+      // Add chart on new page
       pdf.addPage();
       yPosition = 20;
 
-      // Chart title
       pdf.setFontSize(16);
       pdf.setFont('helvetica', 'bold');
-      pdf.text('Glucose Dynamics Chart', pageWidth / 2, yPosition, { align: 'center' });
+      pdf.setTextColor(247, 105, 2); // RIT Orange
+      pdf.text('Glucose Dynamics Visualization', pageWidth / 2, yPosition, { align: 'center' });
       yPosition += 15;
 
-      // Capture the chart
       if (plotRef.current) {
         const chartElement = plotRef.current.el;
         const canvas = await html2canvas(chartElement, {
@@ -412,149 +518,44 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
         const imgWidth = pageWidth - 40;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-        pdf.addImage(imgData, 'PNG', 20, yPosition, imgWidth, imgHeight);
-        yPosition += imgHeight + 10;
+        pdf.addImage(imgData, 'PNG', 20, yPosition, imgWidth, Math.min(imgHeight, 160));
       }
 
-      // Add new page for ODE equations
-      pdf.addPage();
-      yPosition = 20;
-
-      // ODE Equations Section
-      pdf.setFontSize(16);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Mathematical Model: Ordinary Differential Equations', 20, yPosition);
-      yPosition += 15;
-
-      pdf.setFontSize(12);
-      pdf.setFont('helvetica', 'normal');
-      pdf.text('This simulation is based on a system of 12 coupled differential equations that model', 20, yPosition);
-      yPosition += 6;
-      pdf.text('the complex interactions between glucose, insulin, and other hormones in the body.', 20, yPosition);
-      yPosition += 10;
-
-      // Key equations (simplified for general audience)
-      pdf.setFontSize(14);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Key Model Components:', 20, yPosition);
-      yPosition += 10;
-
-      pdf.setFontSize(11);
-      pdf.setFont('helvetica', 'normal');
-      const equations = [
-        '1. Blood Glucose (G): Affected by food intake, insulin action, and liver glucose release',
-        '   • Increases with meals and stress',
-        '   • Decreases with insulin and exercise',
-        '',
-        '2. Insulin (I): Produced by pancreatic β-cells in response to glucose',
-        '   • Higher glucose levels trigger more insulin production',
-        '   • Helps cells absorb glucose from blood',
-        '',
-        '3. Glucagon (C): Produced by pancreatic α-cells when glucose is low',
-        '   • Signals liver to release stored glucose',
-        '   • Counteracts insulin effects',
-        '',
-        '4. GLP-1 (L): Incretin hormone that enhances insulin secretion',
-        '   • Released after meals',
-        '   • Target for diabetes medications',
-        '',
-        '5. Pancreatic Cells (β and α): Respond to glucose and hormone levels',
-        '   • β-cells: Produce insulin when glucose is high',
-        '   • α-cells: Produce glucagon when glucose is low',
-        '',
-        '6. Glucose Transporters (GLUT-2, GLUT-4): Enable glucose uptake by cells',
-        '   • GLUT-2: In liver and pancreas (glucose sensing)',
-        '   • GLUT-4: In muscle and fat (insulin-dependent)',
-      ];
-
-      equations.forEach(eq => {
-        if (yPosition > pageHeight - 20) {
-          pdf.addPage();
-          yPosition = 20;
-        }
-        pdf.text(eq, 20, yPosition);
-        yPosition += 5;
-      });
-
-      // Add new page for parameters
-      pdf.addPage();
-      yPosition = 20;
-
-      // Model Parameters Section
-      pdf.setFontSize(16);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Model Parameters (Personalized for Patient)', 20, yPosition);
-      yPosition += 15;
-
-      pdf.setFontSize(12);
-      pdf.setFont('helvetica', 'normal');
-      pdf.text('The following parameters were automatically adjusted based on patient characteristics:', 20, yPosition);
-      yPosition += 10;
-
-      // Key parameter explanations
-      const parameterExplanations = [
-        'Age Factor: Older patients have reduced β-cell function',
-        'BMI Factor: Higher BMI increases insulin resistance and inflammation',
-        'Activity Level: Regular exercise improves insulin sensitivity',
-        'Medications: Each medication has specific effects on glucose metabolism',
-        'Gender: Affects baseline insulin sensitivity and hormone interactions',
-        'Smoking Status: Increases inflammation and insulin resistance',
-        '',
-        'Example Parameter Adjustments:',
-        `• Obesity factor: ${simulationParams.palmitic_factor}x (1.0 = normal, higher = more insulin resistant)`,
-        `• Food factor: ${simulationParams.food_factor}x (represents dietary habits)`,
-        `• Drug dosage: ${simulationParams.drug_dosage} units (GLP-1 agonist equivalent)`,
-      ];
-
-      parameterExplanations.forEach(param => {
-        if (yPosition > pageHeight - 20) {
-          pdf.addPage();
-          yPosition = 20;
-        }
-        pdf.text(param, 20, yPosition);
-        yPosition += 6;
-      });
-
-      // Add recommendations
-      if (simulationResult.recommendations.length > 0) {
-        yPosition += 10;
-        pdf.setFontSize(14);
-        pdf.setFont('helvetica', 'bold');
-        pdf.text('Personalized Recommendations:', 20, yPosition);
-        yPosition += 10;
-
-        pdf.setFontSize(11);
-        pdf.setFont('helvetica', 'normal');
-        simulationResult.recommendations.forEach((rec, index) => {
-          if (yPosition > pageHeight - 20) {
-            pdf.addPage();
-            yPosition = 20;
-          }
-          pdf.text(`${index + 1}. ${rec}`, 20, yPosition);
-          yPosition += 6;
-        });
-      }
-
-      // Save the PDF
-      const fileName = `diabetes_simulation_${patientData.name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`;
+      // Save PDF
+      const fileName = `RIT_diabetes_simulation_${patientData.name.replace(/\s+/g, '_')}_${activeAnalysis}_${new Date().toISOString().split('T')[0]}.pdf`;
       pdf.save(fileName);
 
     } catch (error) {
-      console.error('PDF generation failed:', error);
-      alert('Failed to generate PDF report. Please try again.');
+      console.error('Enhanced PDF generation failed:', error);
+      alert('Failed to generate enhanced PDF report. Please try again.');
     } finally {
       setExportingPDF(false);
     }
   };
 
+  const getMealSizeLabel = (factor: number): string => {
+    if (factor === 0) return 'Skip';
+    if (factor <= 0.5) return 'Light';
+    if (factor <= 1.0) return 'Normal';
+    if (factor <= 1.5) return 'Large';
+    return 'Extra Large';
+  };
+
   return (
-    <div className="simulation-dashboard">
-      <div className="dashboard-header">
+    <div className="enhanced-simulation-dashboard rit-dashboard">
+      <div className="dashboard-header rit-header">
         <div className="patient-info">
-          <h2>{patientData.name}</h2>
+          <div className="rit-branding-header">
+            <span className="rit-logo-header">🎓</span>
+            <div>
+              <h2>{patientData.name} - Enhanced Simulation</h2>
+              <span className="rit-subtitle-header">Rochester Institute of Technology</span>
+            </div>
+          </div>
           <div className="patient-stats">
             <span>Age: {patientData.age}</span>
             <span>BMI: {calculateBMI()}</span>
+            <span>Activity: {patientData.activity_level}</span>
             {simulationResult && (
               <>
                 <span>A1C: {simulationResult.a1c_estimate}%</span>
@@ -567,38 +568,72 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
         </div>
         <div className="dashboard-actions">
           <button 
-            className="btn-secondary" 
-            onClick={generatePDFReport} 
-            disabled={!simulationResult || exportingPDF}
+            className="btn-secondary rit-secondary" 
+            onClick={generateEnhancedPDFReport} 
+            disabled={(!simulationResult && !comparisonResults) || exportingPDF}
           >
-            {exportingPDF ? '📄 Generating...' : '📄 Download PDF Report'}
+            {exportingPDF ? '📄 Generating...' : '📄 RIT Report'}
           </button>
-          <button className="btn-primary" onClick={runSimulation} disabled={loading}>
+          <button className="btn-primary rit-primary" onClick={runBasicSimulation} disabled={loading}>
             {loading ? 'Running...' : '🔄 Refresh'}
           </button>
         </div>
       </div>
 
       <div className="dashboard-content">
-        <div className="parameter-panel">
-          <h3>Simulation Parameters</h3>
+        <div className="parameter-panel rit-panel">
+          <h3>🎛️ Enhanced Controls</h3>
           
+          {/* Analysis Type Selection */}
           <div className="parameter-group">
-            <label>Simulation Duration: {simulationParams.simulation_hours} hours</label>
+            <h4>Analysis Type</h4>
+            <div className="analysis-buttons">
+              <button 
+                className={`btn-analysis rit-analysis ${activeAnalysis === 'basic' ? 'active' : ''}`}
+                onClick={runBasicSimulation}
+                disabled={loading}
+              >
+                Basic Simulation
+              </button>
+              <button 
+                className={`btn-analysis rit-analysis ${activeAnalysis === 'meals' ? 'active' : ''}`}
+                onClick={runMealComparison}
+                disabled={loading}
+              >
+                Meal Patterns
+              </button>
+              <button 
+                className={`btn-analysis rit-analysis ${activeAnalysis === 'progression' ? 'active' : ''}`}
+                onClick={runObesityProgression}
+                disabled={loading}
+              >
+                Obesity Progression
+              </button>
+              <button 
+                className={`btn-analysis rit-analysis ${activeAnalysis === 'treatment' ? 'active' : ''}`}
+                onClick={runTreatmentAnalysis}
+                disabled={loading}
+              >
+                Drug Treatment
+              </button>
+            </div>
+          </div>
+
+          {/* Basic Parameters */}
+          <div className="parameter-group">
+            <h4>Simulation Parameters</h4>
+            
+            <label>Duration: {simulationParams.simulation_hours}h</label>
             <input
               type="range"
               min="6"
               max="72"
               step="6"
               value={simulationParams.simulation_hours}
-              onChange={(e) => {
-                handleParameterChange('simulation_hours', parseInt(e.target.value));
-                debouncedSimulation();
-              }}
+              onChange={(e) => handleParameterChange('simulation_hours', parseInt(e.target.value))}
+              className="rit-slider"
             />
-          </div>
 
-          <div className="parameter-group">
             <label>Food Factor: {simulationParams.food_factor.toFixed(1)}x</label>
             <input
               type="range"
@@ -606,51 +641,121 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
               max="3.0"
               step="0.1"
               value={simulationParams.food_factor}
-              onChange={(e) => {
-                handleParameterChange('food_factor', parseFloat(e.target.value));
-                debouncedSimulation();
-              }}
+              onChange={(e) => handleParameterChange('food_factor', parseFloat(e.target.value))}
+              className="rit-slider"
             />
-            <small>1.0 = normal eating, 2.0+ = overeating</small>
-          </div>
+            <small>Represents overall food intake (1.0 = normal, 2.0+ = overeating)</small>
 
-          <div className="parameter-group">
-            <label>Obesity Factor: {simulationParams.palmitic_factor.toFixed(1)}x</label>
+            <label>Palmitic Factor: {simulationParams.palmitic_factor.toFixed(1)}x</label>
             <input
               type="range"
               min="0.5"
               max="4.0"
               step="0.1"
               value={simulationParams.palmitic_factor}
-              onChange={(e) => {
-                handleParameterChange('palmitic_factor', parseFloat(e.target.value));
-                debouncedSimulation();
-              }}
+              onChange={(e) => handleParameterChange('palmitic_factor', parseFloat(e.target.value))}
+              className="rit-slider"
             />
-            <small>1.0 = normal weight, 3.0+ = obese</small>
-          </div>
+            <small>Obesity-related inflammatory marker (1.0 = normal, 3.0+ = obese)</small>
 
-          <div className="parameter-group">
-            <label>Drug Dosage: {simulationParams.drug_dosage.toFixed(1)} units</label>
+            <label>Drug Dosage: {simulationParams.drug_dosage.toFixed(1)}</label>
             <input
               type="range"
               min="0"
               max="2.0"
               step="0.1"
               value={simulationParams.drug_dosage}
-              onChange={(e) => {
-                handleParameterChange('drug_dosage', parseFloat(e.target.value));
-                debouncedSimulation();
-              }}
+              onChange={(e) => handleParameterChange('drug_dosage', parseFloat(e.target.value))}
+              className="rit-slider"
             />
-            <small>0 = no medication, 1.0+ = GLP-1 agonist therapy</small>
+            <small>GLP-1 agonist equivalent (0 = none, 1.0+ = therapeutic dose)</small>
           </div>
 
+          {/* Enhanced Meal Controls */}
+          <div className="parameter-group">
+            <h4>Individual Meal Factors</h4>
+            <div className="meal-controls">
+              {['Breakfast', 'Lunch', 'Dinner', 'Snack'].map((meal, index) => (
+                <div key={meal} className="meal-factor-control">
+                  <label>{meal}: {simulationParams.meal_factors[index]?.toFixed(1)}x ({getMealSizeLabel(simulationParams.meal_factors[index] || 0)})</label>
+                  <input
+                    type="range"
+                    min="0"
+                    max="3.0"
+                    step="0.1"
+                    value={simulationParams.meal_factors[index] || 0}
+                    onChange={(e) => handleMealFactorChange(index, parseFloat(e.target.value))}
+                    className="rit-slider"
+                  />
+                </div>
+              ))}
+            </div>
+            
+            <div className="meal-pattern-buttons">
+              <button 
+                className="btn-pattern rit-pattern"
+                onClick={() => setMealPattern('balanced')}
+              >
+                Balanced Meals
+              </button>
+              <button 
+                className="btn-pattern rit-pattern"
+                onClick={() => setMealPattern('light-heavy')}
+              >
+                Light → Heavy
+              </button>
+              <button 
+                className="btn-pattern rit-pattern"
+                onClick={() => setMealPattern('heavy-light')}
+              >
+                Heavy → Light
+              </button>
+              <button 
+                className="btn-pattern rit-pattern"
+                onClick={() => setMealPattern('small-frequent')}
+              >
+                Small Frequent
+              </button>
+            </div>
+          </div>
+
+          {/* Quick Scenarios */}
+          <div className="parameter-group">
+            <h4>Quick Scenarios</h4>
+            <div className="scenario-buttons">
+              <button 
+                className="btn-scenario rit-scenario"
+                onClick={() => setScenario('normal')}
+              >
+                Normal Health
+              </button>
+              <button 
+                className="btn-scenario rit-scenario"
+                onClick={() => setScenario('high-risk')}
+              >
+                High Risk
+              </button>
+              <button 
+                className="btn-scenario rit-scenario"
+                onClick={() => setScenario('treatment')}
+              >
+                With Treatment
+              </button>
+              <button 
+                className="btn-scenario rit-scenario"
+                onClick={() => setScenario('optimal')}
+              >
+                Optimal Control
+              </button>
+            </div>
+          </div>
+
+          {/* Metric Selection */}
           <div className="metric-selector">
-            <h4>Display Metrics</h4>
+            <h4>Display Variables</h4>
             <div className="metric-checkboxes">
               {Object.entries(selectedMetrics).map(([metric, selected]) => (
-                <label key={metric} className="metric-checkbox">
+                <label key={metric} className="metric-checkbox rit-checkbox">
                   <input
                     type="checkbox"
                     checked={selected}
@@ -661,111 +766,199 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
                       }))
                     }
                   />
-                  <span className={`metric-label ${metric}`}>
-                    {metric.replace('_', '-').charAt(0).toUpperCase() + metric.replace('_', '-').slice(1)}
+                  <span className={`metric-label ${metric.replace('_', '-')}`}>
+                    {metric.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                   </span>
                 </label>
               ))}
             </div>
           </div>
-
-          <div className="preset-buttons">
-            <button onClick={() => {
-              setSimulationParams({...simulationParams, food_factor: 1.0, palmitic_factor: 1.0, drug_dosage: 0.0});
-              debouncedSimulation();
-            }}>Normal</button>
-            <button onClick={() => {
-              setSimulationParams({...simulationParams, food_factor: 2.0, palmitic_factor: 2.5, drug_dosage: 0.0});
-              debouncedSimulation();
-            }}>High Risk</button>
-            <button onClick={() => {
-              setSimulationParams({...simulationParams, food_factor: 1.2, palmitic_factor: 1.5, drug_dosage: 1.0});
-              debouncedSimulation();
-            }}>With Treatment</button>
-            <button onClick={() => {
-              setSimulationParams({...simulationParams, food_factor: 0.8, palmitic_factor: 0.7, drug_dosage: 0.5});
-              debouncedSimulation();
-            }}>Optimal</button>
-          </div>
         </div>
 
-        <div className="plot-container">
+        <div className="results-panel rit-results">
           {loading ? (
-            <div className="loading-spinner">
-              <div className="spinner"></div>
-              <p>Running simulation...</p>
+            <div className="loading-spinner rit-loading">
+              <div className="spinner rit-spinner"></div>
+              <p>Running {activeAnalysis} analysis...</p>
             </div>
           ) : error ? (
-            <div className="error-message">
-              <h3>Simulation Error</h3>
+            <div className="error-message rit-error">
+              <h3>Analysis Error</h3>
               <p>{error}</p>
-              <button onClick={runSimulation} className="btn-primary">Try Again</button>
+              <button onClick={runBasicSimulation} className="btn-primary rit-primary">Try Again</button>
             </div>
           ) : simulationResult ? (
-            <Plot
-              ref={plotRef}
-              data={createPlotData()}
-              layout={getPlotLayout()}
-              config={{
-                displayModeBar: true,
-                displaylogo: false,
-                modeBarButtonsToRemove: ['pan2d', 'lasso2d', 'select2d'],
-                toImageButtonOptions: {
-                  format: 'png',
-                  filename: `diabetes_simulation_${patientData.name}`,
-                  height: 600,
-                  width: 1000,
-                  scale: 1
-                }
-              }}
-              style={{ width: '100%', height: '100%' }}
-            />
+            <div className="plot-container">
+              <Plot
+                ref={plotRef}
+                data={createPlotData()}
+                layout={getPlotLayout()}
+                config={{
+                  displayModeBar: true,
+                  displaylogo: false,
+                  modeBarButtonsToRemove: ['pan2d', 'lasso2d', 'select2d'],
+                  toImageButtonOptions: {
+                    format: 'png',
+                    filename: `RIT_diabetes_${activeAnalysis}_${patientData.name}`,
+                    height: 600,
+                    width: 1200,
+                    scale: 2
+                  }
+                }}
+                style={{ width: '100%', height: '600px' }}
+              />
+            </div>
+          ) : comparisonResults ? (
+            <div className="comparison-results">
+              <div className="comparison-card rit-card">
+                <h3>{activeAnalysis.charAt(0).toUpperCase() + activeAnalysis.slice(1)} Analysis Results</h3>
+                
+                {comparisonResults.comparison_metrics && (
+                  <div className="comparison-table">
+                    <table className="rit-table">
+                      <thead>
+                        <tr>
+                          <th>Scenario</th>
+                          <th>A1C (%)</th>
+                          <th>Change</th>
+                          <th>Avg Glucose</th>
+                          <th>Time in Range</th>
+                          <th>Variability</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {comparisonResults.comparison_metrics.map((metric: any, index: number) => (
+                          <tr key={index}>
+                            <td><strong>{metric.scenario}</strong></td>
+                            <td>{metric.a1c_estimate}%</td>
+                            <td className={metric.a1c_change < 0 ? 'improvement' : metric.a1c_change > 0 ? 'worsening' : 'neutral'}>
+                              {metric.a1c_change >= 0 ? '+' : ''}{metric.a1c_change}%
+                            </td>
+                            <td>{metric.average_glucose} mg/dL</td>
+                            <td>{metric.time_in_range}%</td>
+                            <td>{metric.glucose_variability} mg/dL</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {comparisonResults.recommendations && (
+                  <div className="recommendations rit-recommendations">
+                    <h4>Analysis Recommendations</h4>
+                    <ul>
+                      {comparisonResults.recommendations.map((rec: string, index: number) => (
+                        <li key={index}>{rec}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {comparisonResults.clinical_outcomes && (
+                  <div className="clinical-outcomes rit-outcomes">
+                    <h4>Clinical Outcomes</h4>
+                    <ul>
+                      {comparisonResults.clinical_outcomes.map((outcome: string, index: number) => (
+                        <li key={index}>{outcome}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
           ) : (
-            <div className="no-data">
-              <p>No simulation data available</p>
+            <div className="no-data rit-no-data">
+              <p>Select an analysis type to view results</p>
             </div>
           )}
         </div>
       </div>
 
+      {/* Enhanced Summary Section */}
       {simulationResult && (
         <div className="simulation-summary">
-          <div className="summary-card">
-            <h3>Simulation Summary</h3>
+          <div className="summary-card rit-summary">
+            <div className="rit-summary-header">
+              <h3>📊 Enhanced Simulation Summary</h3>
+              <div className="rit-logo-small">🎓</div>
+            </div>
             <div className="summary-grid">
-              <div className="summary-item">
+              <div className="summary-item rit-summary-item">
                 <label>Average Glucose:</label>
                 <span>{simulationResult.simulation_summary.average_glucose} mg/dL</span>
               </div>
-              <div className="summary-item">
+              <div className="summary-item rit-summary-item">
                 <label>Peak Glucose:</label>
                 <span>{simulationResult.simulation_summary.max_glucose} mg/dL</span>
               </div>
-              <div className="summary-item">
+              <div className="summary-item rit-summary-item">
                 <label>Glucose Variability:</label>
                 <span>{simulationResult.simulation_summary.glucose_variability} mg/dL</span>
               </div>
-              <div className="summary-item">
+              <div className="summary-item rit-summary-item">
                 <label>Time in Range:</label>
                 <span>{simulationResult.simulation_summary.time_in_range}%</span>
               </div>
-              <div className="summary-item">
+              <div className="summary-item rit-summary-item">
+                <label>Time in Tight Range:</label>
+                <span>{simulationResult.simulation_summary.time_in_tight_range || 'N/A'}%</span>
+              </div>
+              <div className="summary-item rit-summary-item">
                 <label>A1C Estimate:</label>
                 <span className={`diagnosis ${simulationResult.diagnosis.toLowerCase()}`}>
                   {simulationResult.a1c_estimate}%
                 </span>
               </div>
-              <div className="summary-item">
-                <label>Diagnosis:</label>
-                <span className={`diagnosis ${simulationResult.diagnosis.toLowerCase()}`}>
-                  {simulationResult.diagnosis}
-                </span>
+            </div>
+
+            {/* Enhanced Glucose Metrics */}
+            {simulationResult.glucose_metrics && (
+              <div className="meal-analysis rit-analysis-section">
+                <h4>🔬 Advanced Glucose Analysis</h4>
+                <div className="meal-breakdown">
+                  <div className="meal-item rit-metric-item">
+                    <div className="meal-name">Dawn Phenomenon</div>
+                    <div className="meal-factor">{simulationResult.glucose_metrics.dawn_phenomenon || 0} mg/dL</div>
+                    <div className="meal-size">Early morning rise</div>
+                  </div>
+                  <div className="meal-item rit-metric-item">
+                    <div className="meal-name">Stability Score</div>
+                    <div className="meal-factor">{simulationResult.glucose_metrics.glucose_stability?.stability_score || 0}/100</div>
+                    <div className="meal-size">Higher = more stable</div>
+                  </div>
+                  <div className="meal-item rit-metric-item">
+                    <div className="meal-name">Mean Excursion</div>
+                    <div className="meal-factor">{simulationResult.glucose_metrics.glucose_stability?.mean_rate_of_change || 0}</div>
+                    <div className="meal-size">mg/dL per 5min</div>
+                  </div>
+                  <div className="meal-item rit-metric-item">
+                    <div className="meal-name">MAGE</div>
+                    <div className="meal-factor">{simulationResult.glucose_metrics.glucose_stability?.mage || 0}</div>
+                    <div className="meal-size">Mean amplitude</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Current Meal Configuration */}
+            <div className="meal-analysis rit-analysis-section">
+              <h4>🍽️ Current Meal Configuration</h4>
+              <div className="meal-breakdown">
+                {['Breakfast', 'Lunch', 'Dinner', 'Snack'].map((meal, index) => (
+                  <div key={meal} className="meal-item rit-metric-item">
+                    <div className="meal-name">{meal} ({simulationParams.meal_times[index]}:00)</div>
+                    <div className="meal-factor">{simulationParams.meal_factors[index]?.toFixed(1)}x</div>
+                    <div className="meal-size">{getMealSizeLabel(simulationParams.meal_factors[index] || 0)}</div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {simulationResult.recommendations.length > 0 && (
-              <div className="recommendations">
-                <h4>Personalized Recommendations:</h4>
+            {/* Recommendations */}
+            {simulationResult.recommendations && simulationResult.recommendations.length > 0 && (
+              <div className="recommendations rit-recommendations">
+                <h4>💡 Personalized Recommendations</h4>
                 <ul>
                   {simulationResult.recommendations.map((rec, index) => (
                     <li key={index}>{rec}</li>
@@ -780,4 +973,4 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
   );
 };
 
-export default SimulationDashboard;
+export default EnhancedSimulationDashboard;

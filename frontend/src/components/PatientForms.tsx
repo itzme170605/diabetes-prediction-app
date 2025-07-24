@@ -25,6 +25,10 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
     activity_level: 'moderate',
     smoking_status: 'non_smoker',
     family_history: false,
+    // Derived fields (calculated automatically)
+    bmi: null,
+    bmi_category: null,
+    diabetes_risk: null,
   });
 
   const [showModal, setShowModal] = useState(true);
@@ -88,14 +92,23 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
   return (
     <div className="modal-overlay">
       <div className="patient-form-modal">
-        <h2>Patient Information</h2>
+        <div className="form-header">
+          <div className="rit-branding">
+            <div className="rit-logo">🎓</div>
+            <div className="rit-title">
+              <h2>Enhanced Diabetes Simulation</h2>
+              <p className="rit-subtitle">Rochester Institute of Technology</p>
+            </div>
+          </div>
+        </div>
+        
         <p className="form-description">
-          Enter patient details to personalize the diabetes simulation model
+          Enter comprehensive patient details for personalized diabetes simulation using our enhanced 12-variable ODE model based on peer-reviewed research.
         </p>
         
         <form onSubmit={handleSubmit} className="patient-form">
           <div className="form-section">
-            <h3>Basic Information</h3>
+            <h3>📋 Basic Information</h3>
             <div className="form-grid">
               <div className="form-group">
                 <label htmlFor="name">Full Name *</label>
@@ -122,6 +135,7 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
                   max="120"
                   required
                 />
+                <small>Age affects β-cell function and insulin sensitivity</small>
               </div>
               
               <div className="form-group">
@@ -136,12 +150,13 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
                   <option value="male">Male</option>
                   <option value="female">Female</option>
                 </select>
+                <small>Affects metabolic parameters and hormone sensitivity</small>
               </div>
             </div>
           </div>
 
           <div className="form-section">
-            <h3>Physical Measurements</h3>
+            <h3>⚖️ Physical Measurements</h3>
             <div className="form-grid">
               <div className="form-group">
                 <label htmlFor="weight">Weight (kg) *</label>
@@ -174,15 +189,16 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
               
               <div className="form-group">
                 <label>BMI & Category</label>
-                <div className="bmi-display">
+                <div className="bmi-display rit-accent">
                   {calculateBMI()} kg/m² ({getBMICategory()})
                 </div>
+                <small>BMI directly affects obesity factor and TNF-α levels in the model</small>
               </div>
             </div>
           </div>
 
           <div className="form-section">
-            <h3>Medical Information</h3>
+            <h3>🩺 Medical Information</h3>
             <div className="form-grid">
               <div className="form-group">
                 <label htmlFor="diabetes_type">Diabetes Status</label>
@@ -192,11 +208,12 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
                   value={formData.diabetes_type || ''}
                   onChange={handleInputChange}
                 >
-                  <option value="">Auto-detect from glucose</option>
-                  <option value="normal">Normal</option>
-                  <option value="prediabetic">Prediabetic</option>
-                  <option value="diabetic">Type 2 Diabetic</option>
+                  <option value="">Auto-detect from glucose/A1C</option>
+                  <option value="normal">Normal glucose tolerance</option>
+                  <option value="prediabetic">Prediabetes</option>
+                  <option value="diabetic">Type 2 Diabetes</option>
                 </select>
+                <small>Affects β-cell function and insulin resistance parameters</small>
               </div>
               
               <div className="form-group">
@@ -209,8 +226,9 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
                   onChange={handleInputChange}
                   min="50"
                   max="400"
-                  placeholder="70-100 normal"
+                  placeholder="Normal: 70-99 mg/dL"
                 />
+                <small>Used for diabetes status classification and model calibration</small>
               </div>
               
               <div className="form-group">
@@ -224,17 +242,18 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
                   min="3"
                   max="15"
                   step="0.1"
-                  placeholder="<5.7% normal"
+                  placeholder="Normal: <5.7%"
                 />
+                <small>Key diagnostic marker for diabetes management</small>
               </div>
             </div>
           </div>
 
           <div className="form-section">
-            <h3>Lifestyle Factors</h3>
+            <h3>🏃‍♂️ Lifestyle Factors</h3>
             <div className="form-grid">
               <div className="form-group">
-                <label htmlFor="activity_level">Activity Level</label>
+                <label htmlFor="activity_level">Physical Activity Level</label>
                 <select
                   id="activity_level"
                   name="activity_level"
@@ -242,10 +261,11 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
                   onChange={handleInputChange}
                 >
                   <option value="sedentary">Sedentary (little to no exercise)</option>
-                  <option value="light">Light (1-3 days/week)</option>
-                  <option value="moderate">Moderate (3-5 days/week)</option>
-                  <option value="active">Very Active (6-7 days/week)</option>
+                  <option value="light">Light activity (1-3 days/week)</option>
+                  <option value="moderate">Moderate activity (3-5 days/week)</option>
+                  <option value="active">Very active (6-7 days/week)</option>
                 </select>
+                <small>Significantly affects insulin sensitivity and GLUT-4 function</small>
               </div>
               
               <div className="form-group">
@@ -260,6 +280,7 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
                   <option value="former_smoker">Former smoker</option>
                   <option value="smoker">Current smoker</option>
                 </select>
+                <small>Smoking increases inflammation (TNF-α) and insulin resistance</small>
               </div>
 
               <div className="form-group">
@@ -273,11 +294,12 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
                   min="1"
                   max="10"
                 />
+                <small>Affects glucose variability and meal timing optimization</small>
               </div>
             </div>
 
             <div className="form-group">
-              <label htmlFor="family_history" className="checkbox-label">
+              <label className="checkbox-wrapper">
                 <input
                   type="checkbox"
                   id="family_history"
@@ -285,24 +307,29 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
                   checked={formData.family_history || false}
                   onChange={handleInputChange}
                 />
+                <span className="checkmark"></span>
                 Family history of diabetes
               </label>
+              <small>Increases genetic predisposition and diabetes risk scoring</small>
             </div>
           </div>
 
           <div className="form-section">
-            <h3>Medications</h3>
-            <div className="medication-input">
-              <input
-                type="text"
-                value={currentMedication}
-                onChange={(e) => setCurrentMedication(e.target.value)}
-                placeholder="Enter medication name"
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addMedication())}
-              />
-              <button type="button" onClick={addMedication} className="btn-secondary">
-                Add
-              </button>
+            <h3>💊 Current Medications</h3>
+            <div className="medication-input-wrapper">
+              <div className="medication-input">
+                <input
+                  type="text"
+                  value={currentMedication}
+                  onChange={(e) => setCurrentMedication(e.target.value)}
+                  placeholder="Enter medication name"
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addMedication())}
+                />
+                <button type="button" onClick={addMedication} className="btn-add-med">
+                  Add
+                </button>
+              </div>
+              <small>Medications directly affect model parameters (insulin sensitivity, GLP-1 levels, etc.)</small>
             </div>
             
             <div className="medication-list">
@@ -321,9 +348,9 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
             </div>
 
             <div className="common-medications">
-              <p>Common diabetes medications:</p>
+              <p><strong>Common diabetes medications:</strong></p>
               <div className="medication-suggestions">
-                {['Metformin', 'Insulin', 'GLP-1 agonist', 'Semaglutide', 'Ozempic'].map(med => (
+                {['Metformin', 'Insulin', 'Semaglutide (Ozempic)', 'Tirzepatide (Mounjaro)', 'Liraglutide', 'SGLT2 inhibitor'].map(med => (
                   <button
                     key={med}
                     type="button"
@@ -344,9 +371,43 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
             </div>
           </div>
 
+          <div className="form-section enhanced-features rit-section">
+            <h3>🔬 Enhanced Simulation Features</h3>
+            <div className="feature-highlights">
+              <div className="feature-item">
+                <span className="feature-icon">📊</span>
+                <div className="feature-content">
+                  <strong>12-Variable ODE Model</strong>
+                  <p>Advanced mathematical model including GLP-1, glucagon, GLUT transporters, and inflammatory markers</p>
+                </div>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">🍽️</span>
+                <div className="feature-content">
+                  <strong>Meal Pattern Analysis</strong>
+                  <p>Customize individual meals (breakfast, lunch, dinner, snacks) and compare eating patterns</p>
+                </div>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">💊</span>
+                <div className="feature-content">
+                  <strong>Drug Treatment Modeling</strong>
+                  <p>Simulate GLP-1 agonist effects with personalized dosing and lifestyle modifications</p>
+                </div>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">📈</span>
+                <div className="feature-content">
+                  <strong>Advanced Analytics</strong>
+                  <p>Dawn phenomenon, post-meal response, glucose stability, and metabolic age assessment</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="form-actions">
-            <button type="submit" className="btn-primary">
-              Start Simulation
+            <button type="submit" className="btn-primary rit-primary">
+              🚀 Start Enhanced Simulation
             </button>
           </div>
         </form>

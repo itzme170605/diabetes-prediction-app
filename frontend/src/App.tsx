@@ -19,7 +19,7 @@ function App() {
   useEffect(() => {
     // Test API connection on app start
     const testConnection = async () => {
-      const connected = await simulationAPI.testConnection();
+      const connected = await simulationAPI.isConnected();
       setApiConnected(connected);
     };
     testConnection();

@@ -1,42 +1,83 @@
-/* src/components/SimulationDashboard.css */
-.simulation-dashboard {
+/* Enhanced Simulation Dashboard Styles - RIT Branded */
+.enhanced-simulation-dashboard.rit-dashboard {
   padding: 2rem;
-  padding-top: 120px; /* Add extra space for fixed navbar */
-  max-width: 1400px;
+  padding-top: 120px;
+  max-width: 1600px;
   margin: 0 auto;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  min-height: 100vh;
 }
 
-.dashboard-header {
+/* RIT Header Styling */
+.dashboard-header.rit-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
-  padding: 1.5rem;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  background: linear-gradient(135deg, #ffffff, #f8f9fa);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(247, 105, 2, 0.1);
+  border: 2px solid #f76902;
+  position: relative;
+}
+
+.dashboard-header.rit-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #f76902, #ff8c00, #f76902);
+  border-radius: 16px 16px 0 0;
+}
+
+.rit-branding-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.rit-logo-header {
+  font-size: 36px;
+  color: #58595b;
 }
 
 .patient-info h2 {
-  color: #e67e22;
-  font-size: 24px;
+  color: #f76902; /* RIT Orange */
+  font-size: 28px;
   margin-bottom: 8px;
+  font-weight: 700;
+}
+
+.rit-subtitle-header {
+  color: #58595b; /* RIT Gray */
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .patient-stats {
   display: flex;
   gap: 2rem;
   flex-wrap: wrap;
+  margin-top: 1rem;
 }
 
 .patient-stats span {
   font-size: 14px;
-  color: #666;
+  color: #58595b; /* RIT Gray */
   font-weight: 600;
+  padding: 6px 12px;
+  background: #f8f9fa;
+  border-radius: 20px;
+  border: 1px solid rgba(247, 105, 2, 0.2);
 }
 
 .diagnosis {
-  padding: 4px 12px;
+  padding: 6px 16px;
   border-radius: 20px;
   font-size: 12px;
   font-weight: 700;
@@ -47,28 +88,32 @@
 .diagnosis.normal {
   background: #d5f4e6;
   color: #27ae60;
+  border: 2px solid #27ae60;
 }
 
 .diagnosis.prediabetic {
-  background: #fef9e7;
-  color: #f39c12;
+  background: #fff3e0;
+  color: #f76902; /* RIT Orange */
+  border: 2px solid #f76902;
 }
 
 .diagnosis.diabetic {
   background: #fadbd8;
   color: #e74c3c;
+  border: 2px solid #e74c3c;
 }
 
 .dashboard-actions {
   display: flex;
   gap: 1rem;
+  flex-direction: column;
 }
 
 .btn-primary,
 .btn-secondary {
-  padding: 10px 20px;
+  padding: 12px 24px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -77,100 +122,138 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.btn-primary {
-  background: #e67e22;
+.btn-primary.rit-primary {
+  background: linear-gradient(135deg, #f76902, #e55a00);
   color: white;
+  box-shadow: 0 4px 15px rgba(247, 105, 2, 0.3);
 }
 
-.btn-primary:hover {
-  background: #d35400;
+.btn-primary.rit-primary:hover {
+  background: linear-gradient(135deg, #e55a00, #d44f00);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(247, 105, 2, 0.4);
 }
 
-.btn-primary:disabled {
+.btn-primary.rit-primary:disabled {
   background: #bdc3c7;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-.btn-secondary {
+.btn-secondary.rit-secondary {
   background: white;
-  color: #e67e22;
-  border: 2px solid #e67e22;
+  color: #f76902; /* RIT Orange */
+  border: 2px solid #f76902;
+  box-shadow: 0 2px 8px rgba(247, 105, 2, 0.1);
 }
 
-.btn-secondary:hover {
-  background: #e67e22;
+.btn-secondary.rit-secondary:hover {
+  background: #f76902;
   color: white;
-}
-
-.btn-secondary:disabled {
-  background: #f8f9fa;
-  color: #bdc3c7;
-  border-color: #bdc3c7;
-  cursor: not-allowed;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(247, 105, 2, 0.3);
 }
 
 .dashboard-content {
   display: grid;
-  grid-template-columns: 350px 1fr;
+  grid-template-columns: 400px 1fr;
   gap: 2rem;
 }
 
-.parameter-panel {
+/* RIT Parameter Panel */
+.parameter-panel.rit-panel {
   background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(247, 105, 2, 0.1);
+  border: 2px solid rgba(247, 105, 2, 0.2);
   height: fit-content;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
 }
 
-.parameter-panel h3 {
-  color: #e67e22;
-  font-size: 18px;
+.parameter-panel.rit-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #f76902, #ff8c00, #f76902);
+  border-radius: 16px 16px 0 0;
+}
+
+.parameter-panel.rit-panel h3 {
+  color: #f76902; /* RIT Orange */
+  font-size: 20px;
   margin-bottom: 1.5rem;
   text-align: center;
+  border-bottom: 3px solid #f76902;
+  padding-bottom: 0.5rem;
+  font-weight: 700;
 }
 
 .parameter-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 2px solid rgba(247, 105, 2, 0.1);
+}
+
+.parameter-group h4 {
+  color: #58595b; /* RIT Gray */
+  font-size: 16px;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .parameter-group label {
   display: block;
   font-weight: 600;
-  color: #333;
+  color: #58595b; /* RIT Gray */
   margin-bottom: 8px;
   font-size: 14px;
 }
 
-.parameter-group input[type="range"] {
+/* RIT-styled sliders */
+.parameter-group input[type="range"].rit-slider {
   width: 100%;
   height: 6px;
   border-radius: 3px;
   background: #ddd;
   outline: none;
   -webkit-appearance: none;
+  margin: 8px 0;
 }
 
-.parameter-group input[type="range"]::-webkit-slider-thumb {
+.parameter-group input[type="range"].rit-slider::-webkit-slider-thumb {
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #e67e22, #d35400);
+  background: linear-gradient(135deg, #f76902, #e55a00);
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px rgba(247, 105, 2, 0.3);
+  border: 2px solid white;
 }
 
-.parameter-group input[type="range"]::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
+.parameter-group input[type="range"].rit-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #e67e22, #d35400);
+  background: linear-gradient(135deg, #f76902, #e55a00);
   cursor: pointer;
-  border: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(247, 105, 2, 0.3);
 }
 
 .parameter-group small {
@@ -178,53 +261,235 @@
   color: #666;
   font-size: 12px;
   margin-top: 4px;
+  line-height: 1.3;
+  font-style: italic;
 }
 
-.preset-buttons {
+/* Analysis Buttons */
+.analysis-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  margin-top: 2rem;
+  margin-bottom: 1rem;
 }
 
-.preset-buttons button {
-  padding: 8px 12px;
-  border: 2px solid #e67e22;
-  border-radius: 6px;
+.btn-analysis.rit-analysis {
+  padding: 12px 16px;
+  border: 2px solid #58595b; /* RIT Gray */
+  border-radius: 8px;
   background: white;
-  color: #e67e22;
+  color: #58595b;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.preset-buttons button:hover {
-  background: #e67e22;
+.btn-analysis.rit-analysis:hover {
+  background: #58595b;
   color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(88, 89, 91, 0.2);
 }
 
-.results-panel {
+.btn-analysis.rit-analysis.active {
+  background: linear-gradient(135deg, #f76902, #e55a00);
+  color: white;
+  border-color: #f76902;
+  box-shadow: 0 4px 15px rgba(247, 105, 2, 0.3);
+}
+
+/* Enhanced Meal Controls */
+.meal-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.meal-factor-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid rgba(247, 105, 2, 0.2);
+}
+
+.meal-factor-control label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #58595b; /* RIT Gray */
+}
+
+/* Meal Pattern Buttons */
+.meal-pattern-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 1rem;
+}
+
+.btn-pattern.rit-pattern {
+  padding: 10px 12px;
+  border: 2px solid #f76902; /* RIT Orange */
+  border-radius: 8px;
+  background: white;
+  color: #f76902;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-pattern.rit-pattern:hover {
+  background: #f76902;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(247, 105, 2, 0.2);
+}
+
+/* Scenario Buttons */
+.scenario-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 0.5rem;
+}
+
+.btn-scenario.rit-scenario {
+  padding: 10px 12px;
+  border: 2px solid #58595b; /* RIT Gray */
+  border-radius: 8px;
+  background: white;
+  color: #58595b;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-scenario.rit-scenario:hover {
+  background: #58595b;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(88, 89, 91, 0.2);
+}
+
+/* Metric Selection */
+.metric-selector {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid rgba(247, 105, 2, 0.2);
+}
+
+.metric-selector h4 {
+  color: #58595b; /* RIT Gray */
+  font-size: 16px;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.metric-checkbox.rit-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 12px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.metric-checkbox.rit-checkbox:hover {
+  background: #f8f9fa;
+  border-color: rgba(247, 105, 2, 0.2);
+}
+
+.metric-checkbox.rit-checkbox input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
+  accent-color: #f76902; /* RIT Orange */
+  transform: scale(1.2);
+}
+
+.metric-label {
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #58595b; /* RIT Gray */
+}
+
+.metric-label.glucose { color: #f76902; } /* RIT Orange */
+.metric-label.insulin { color: #58595b; } /* RIT Gray */
+.metric-label.glucagon { color: #9b59b6; }
+.metric-label.glp1 { color: #e74c3c; }
+.metric-label.beta-cells { color: #1abc9c; }
+.metric-label.alpha-cells { color: #ff8c00; } /* RIT Secondary Orange */
+
+/* Results Panel */
+.results-panel.rit-results {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(247, 105, 2, 0.1);
+  border: 2px solid rgba(247, 105, 2, 0.2);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.results-panel.rit-results::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #f76902, #ff8c00, #f76902);
+  border-radius: 16px 16px 0 0;
+}
+
+.plot-container {
   background: white;
   border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  min-height: 600px;
+  margin-top: 1rem;
 }
 
-.loading-spinner {
+/* Loading and Error States */
+.loading-spinner.rit-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 4rem;
-  color: #666;
+  color: #58595b; /* RIT Gray */
 }
 
-.loading-spinner .spinner {
+.loading-spinner.rit-loading .spinner.rit-spinner {
   width: 40px;
   height: 40px;
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #e67e22;
+  border-top: 4px solid #f76902; /* RIT Orange */
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -235,236 +500,410 @@
   100% { transform: rotate(360deg); }
 }
 
-.error-message {
+.error-message.rit-error {
   text-align: center;
-  padding: 2rem;
-}
-
-.error-message h3 {
-  color: #e74c3c;
-  margin-bottom: 1rem;
-}
-
-.simulation-results h3 {
-  color: #333;
-  margin-bottom: 1.5rem;
-}
-
-.results-summary {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-.result-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border-left: 4px solid #e67e22;
-}
-
-.result-item label {
-  font-weight: 600;
-  color: #555;
-}
-
-.result-item .value {
-  font-weight: 700;
-  font-size: 18px;
-}
-
-.result-item .value.normal {
-  color: #27ae60;
-}
-
-.result-item .value.prediabetic {
-  color: #f39c12;
-}
-
-.result-item .value.diabetic {
-  color: #e74c3c;
-}
-
-.metric-selector {
-  margin-top: 2rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid #eee;
-}
-
-.metric-selector h4 {
-  color: #333;
-  font-size: 16px;
-  margin-bottom: 1rem;
-}
-
-.metric-checkboxes {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.metric-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 6px;
-  transition: background-color 0.2s ease;
-}
-
-.metric-checkbox:hover {
-  background: #f8f9fa;
-}
-
-.metric-checkbox input[type="checkbox"] {
-  margin: 0;
-  cursor: pointer;
-}
-
-.metric-label {
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.metric-label.glucose { color: #e74c3c; }
-.metric-label.insulin { color: #3498db; }
-.metric-label.glucagon { color: #9b59b6; }
-.metric-label.glp1 { color: #f39c12; }
-
-.plot-container {
-  background: white;
+  padding: 3rem;
+  background: #fadbd8;
+  border: 2px solid #e74c3c;
   border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  min-height: 600px;
+  margin: 2rem;
 }
 
-.no-data {
+.error-message.rit-error h3 {
+  color: #e74c3c;
+  margin-bottom: 1rem;
+}
+
+.no-data.rit-no-data {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 400px;
-  color: #666;
-  font-size: 16px;
+  color: #58595b; /* RIT Gray */
+  font-size: 18px;
+  font-weight: 600;
 }
 
+/* Enhanced Summary */
 .simulation-summary {
   margin-top: 2rem;
 }
 
-.summary-card {
+.summary-card.rit-summary {
   background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 20px rgba(247, 105, 2, 0.1);
+  border: 2px solid rgba(247, 105, 2, 0.2);
+  position: relative;
 }
 
-.summary-card h3 {
-  color: #e67e22;
-  font-size: 18px;
-  margin-bottom: 1rem;
+.summary-card.rit-summary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #f76902, #ff8c00, #f76902);
+  border-radius: 16px 16px 0 0;
+}
+
+.rit-summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 3px solid #f76902;
+}
+
+.rit-summary-header h3 {
+  color: #f76902; /* RIT Orange */
+  font-size: 24px;
+  margin: 0;
+  font-weight: 700;
+}
+
+.rit-logo-small {
+  font-size: 24px;
+  color: #58595b; /* RIT Gray */
 }
 
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-.summary-item {
+.summary-item.rit-summary-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border-left: 4px solid #e67e22;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  border-radius: 12px;
+  border-left: 6px solid #f76902; /* RIT Orange */
+  box-shadow: 0 2px 8px rgba(247, 105, 2, 0.1);
+  transition: transform 0.2s ease;
 }
 
-.summary-item label {
-  font-weight: 600;
-  color: #555;
+.summary-item.rit-summary-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(247, 105, 2, 0.2);
+}
+
+.summary-item.rit-summary-item label {
+  font-weight: 700;
+  color: #58595b; /* RIT Gray */
   font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.summary-item span {
+.summary-item.rit-summary-item span {
   font-weight: 700;
   color: #333;
-  font-size: 14px;
+  font-size: 16px;
 }
 
-.summary-item span.diagnosis {
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 11px;
+/* Meal Analysis */
+.meal-analysis.rit-analysis-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid rgba(247, 105, 2, 0.2);
+}
+
+.meal-analysis.rit-analysis-section h4 {
+  color: #58595b; /* RIT Gray */
+  font-size: 18px;
+  margin-bottom: 1rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
+.meal-breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.meal-item.rit-metric-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  border-radius: 12px;
+  border: 2px solid rgba(247, 105, 2, 0.2);
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.meal-item.rit-metric-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(247, 105, 2, 0.2);
+}
+
+.meal-name {
+  font-weight: 700;
+  color: #58595b; /* RIT Gray */
+  font-size: 13px;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.meal-factor {
+  font-weight: 700;
+  color: #f76902; /* RIT Orange */
+  font-size: 18px;
+  margin-bottom: 0.25rem;
+}
+
+.meal-size {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Recommendations */
+.recommendations.rit-recommendations {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid rgba(247, 105, 2, 0.2);
+}
+
+.recommendations.rit-recommendations h4 {
+  color: #27ae60;
+  font-size: 18px;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.recommendations.rit-recommendations ul {
+  list-style: none;
+  padding: 0;
+}
+
+.recommendations.rit-recommendations li {
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  padding-left: 3rem;
+  position: relative;
+  line-height: 1.6;
+  color: #333;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #27ae60;
+}
+
+.recommendations.rit-recommendations li::before {
+  content: '💡';
+  position: absolute;
+  left: 1rem;
+  font-size: 18px;
+}
+
+/* Comparison Results */
+.comparison-results {
+  margin-top: 2rem;
+}
+
+.comparison-card.rit-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 20px rgba(247, 105, 2, 0.1);
+  border: 2px solid rgba(247, 105, 2, 0.2);
+  position: relative;
+}
+
+.comparison-card.rit-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #f76902, #ff8c00, #f76902);
+  border-radius: 16px 16px 0 0;
+}
+
+.comparison-card.rit-card h3 {
+  color: #f76902; /* RIT Orange */
+  font-size: 22px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.comparison-table {
+  overflow-x: auto;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(247, 105, 2, 0.1);
+}
+
+.comparison-table table.rit-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.comparison-table table.rit-table th {
+  background: linear-gradient(135deg, #f76902, #e55a00); /* RIT Orange */
+  color: white;
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 700;
+  border-bottom: 3px solid #d44f00;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 12px;
+}
+
+.comparison-table table.rit-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+  color: #333;
+}
+
+.comparison-table table.rit-table tbody tr:hover {
+  background: #fff5f0;
+}
+
+.comparison-table table.rit-table tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+.comparison-table table.rit-table tbody tr:nth-child(even):hover {
+  background: #fff5f0;
+}
+
+/* Clinical outcomes */
+.clinical-outcomes.rit-outcomes {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid rgba(247, 105, 2, 0.2);
+}
+
+.clinical-outcomes.rit-outcomes h4 {
+  color: #3498db;
+  font-size: 18px;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.clinical-outcomes.rit-outcomes ul {
+  list-style: none;
+  padding: 0;
+}
+
+.clinical-outcomes.rit-outcomes li {
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  padding-left: 3rem;
+  position: relative;
+  line-height: 1.6;
+  color: #333;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #3498db;
+}
+
+.clinical-outcomes.rit-outcomes li::before {
+  content: '🔬';
+  position: absolute;
+  left: 1rem;
+  font-size: 18px;
+}
+
 /* Responsive Design */
+@media (max-width: 1200px) {
+  .dashboard-content {
+    grid-template-columns: 350px 1fr;
+  }
+}
+
 @media (max-width: 1024px) {
-  .simulation-dashboard {
-    padding-top: 100px; /* Adjust for smaller screens */
+  .enhanced-simulation-dashboard.rit-dashboard {
+    padding-top: 100px;
   }
   
   .dashboard-content {
     grid-template-columns: 1fr;
   }
   
-  .parameter-panel {
+  .parameter-panel.rit-panel {
     order: 2;
+    max-height: none;
   }
   
-  .results-panel {
+  .results-panel.rit-results {
     order: 1;
   }
   
   .dashboard-actions {
-    flex-direction: column;
-    gap: 0.5rem;
+    flex-direction: row;
+    gap: 1rem;
   }
 }
 
 @media (max-width: 768px) {
-  .simulation-dashboard {
+  .enhanced-simulation-dashboard.rit-dashboard {
     padding: 1rem;
-    padding-top: 90px; /* Adjust for mobile */
+    padding-top: 90px;
   }
   
-  .dashboard-header {
+  .dashboard-header.rit-header {
     flex-direction: column;
     gap: 1rem;
+    text-align: center;
+    padding: 1.5rem;
+  }
+  
+  .rit-branding-header {
+    flex-direction: column;
     text-align: center;
   }
   
   .patient-stats {
     justify-content: center;
     gap: 1rem;
+    flex-wrap: wrap;
   }
   
   .patient-stats span {
-    font-size: 13px;
+    font-size: 12px;
+    padding: 4px 8px;
   }
   
-  .results-summary {
+  .summary-grid {
     grid-template-columns: 1fr;
   }
   
-  .preset-buttons {
+  .meal-pattern-buttons,
+  .scenario-buttons,
+  .analysis-buttons {
     grid-template-columns: 1fr;
   }
   
   .dashboard-actions {
     width: 100%;
+    flex-direction: column;
   }
   
   .btn-primary,
@@ -473,7 +912,59 @@
     justify-content: center;
   }
   
-  .summary-grid {
+  .meal-breakdown {
     grid-template-columns: 1fr;
   }
+  
+  .comparison-table {
+    font-size: 12px;
+  }
+  
+  .comparison-table th,
+  .comparison-table td {
+    padding: 8px 6px;
+  }
 }
+
+@media (max-width: 480px) {
+  .parameter-panel.rit-panel,
+  .results-panel.rit-results,
+  .summary-card.rit-summary,
+  .comparison-card.rit-card {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+  
+  .rit-summary-header h3 {
+    font-size: 18px;
+  }
+  
+  .patient-info h2 {
+    font-size: 20px;
+  }
+}
+
+/* Additional RIT-specific enhancements */
+.improvement {
+  color: #27ae60 !important;
+  font-weight: 700;
+}
+
+.worsening {
+  color: #e74c3c !important;
+  font-weight: 700;
+}
+
+.neutral {
+  color: #58595b !important;
+  font-weight: 700;
+}
+
+/* RIT Color Palette Reference
+Primary Orange: #f76902
+Secondary Orange: #ff8c00
+Gray: #58595b
+Light Gray: #e9ecef
+White: #ffffff
+Light Orange: #fff5f0
+*/
