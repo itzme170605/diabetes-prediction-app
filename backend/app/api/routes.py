@@ -4,7 +4,7 @@ import logging
 
 from app.models.patient import PatientData
 from app.models.simulation import SimulationParams, SimulationResult, ComparisonResult
-from app.services.simulation_service import SimulationService
+from app.services.simulation_services import SimulationService
 
 logger = logging.getLogger(__name__)
 

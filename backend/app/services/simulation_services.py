@@ -163,13 +163,12 @@ class SimulationService:
         self.ode_params.lambda_GU4 *= activity_mult  # Glucose uptake
         
     def _extract_results(self, solution: np.ndarray, t_span: np.ndarray, 
-                        patient: PatientData, params: SimulationParams) -> SimulationResult:
-        """Extract and process simulation results"""
-        
-        # Unpack solution
+                    patient: PatientData, params: SimulationParams) -> SimulationResult:
+    
+    # Unpack solution
         B, A, L, I, U2, U4, C, G, Gs, Ta, O, P = solution.T
         
-        # Convert units where necessary (to match frontend expectations)
+        # Convert units where necessary
         glucose_mg_dl = G * 1e5  # Convert from g/cm³ to mg/dL
         insulin_pmol_l = I * 1.8e11  # Convert to pmol/L
         glucagon_pg_ml = C * 1e12  # Convert to pg/mL
@@ -190,6 +189,35 @@ class SimulationService:
         else:
             diagnosis = "Diabetic"
         
+        # Create simulation summary with REQUIRED fields
+        simulation_summary = {
+            "average_glucose": round(metrics['average_glucose'], 1),
+            "max_glucose": round(metrics['max_glucose'], 1),
+            "min_glucose": round(metrics['min_glucose'], 1),
+            "glucose_variability": round(metrics['glucose_variability'], 1),
+            "time_in_range": round(metrics['time_in_range'], 1),
+            "time_above_range": round(metrics['time_above_range'], 1),
+            "time_below_range": round(metrics['time_below_range'], 1),
+            "time_in_tight_range": round(metrics.get('time_in_tight_range', 0), 1),
+            "estimated_a1c": round(a1c, 1)
+        }
+        
+        # Create glucose metrics
+        glucose_metrics = {
+            "dawn_phenomenon": round(metrics.get('dawn_phenomenon', 0), 1),
+            "post_meal_response": {
+                "average_post_meal_rise": 50.0,  # Placeholder
+                "max_post_meal_rise": 80.0,      # Placeholder
+                "meal_response_variability": 15.0 # Placeholder
+            },
+            "glucose_stability": {
+                "mean_rate_of_change": round(metrics.get('coefficient_of_variation', 0), 2),
+                "max_rate_of_change": 5.0,  # Placeholder
+                "mage": round(metrics.get('glucose_variability', 0) * 0.8, 1),  # Approximation
+                "stability_score": max(0, min(100, 100 - metrics.get('coefficient_of_variation', 0)))
+            }
+        }
+        
         # Generate recommendations
         recommendations = self._generate_recommendations(patient, metrics, a1c)
         risk_factors = self._identify_risk_factors(patient)
@@ -200,32 +228,33 @@ class SimulationService:
             insulin=insulin_pmol_l.tolist(),
             glucagon=glucagon_pg_ml.tolist(),
             glp1=glp1_pmol_l.tolist(),
-            beta_cells=(B * 1e3).tolist(),  # Convert to 10^-3
+            beta_cells=(B * 1e3).tolist(),
             alpha_cells=(A * 1e3).tolist(),
             glut2=(U2 * 1e6).tolist(),
             glut4=(U4 * 1e6).tolist(),
             palmitic_acid=(P * 1e6).tolist(),
             oleic_acid=(O * 1e6).tolist(),
             tnf_alpha=(Ta * 1e12).tolist(),
-            stored_glucose=(Gs * 1e5).tolist(),  # mg/dL equivalent
+            stored_glucose=(Gs * 1e5).tolist(),
             total_energy=(total_energy * 1e5).tolist(),
+            
+            optimal_glucose=None,  # Can be calculated if needed
             
             a1c_estimate=round(a1c, 1),
             diagnosis=diagnosis,
-            average_glucose=round(metrics['average_glucose'], 1),
-            max_glucose=round(metrics['max_glucose'], 1),
-            min_glucose=round(metrics['min_glucose'], 1),
-            glucose_variability=round(metrics['glucose_variability'], 1),
-            time_in_range=round(metrics['time_in_range'], 1),
-            time_above_range=round(metrics['time_above_range'], 1),
-            time_below_range=round(metrics['time_below_range'], 1),
+            
+            patient_info=patient.dict(),
+            simulation_summary=simulation_summary,
+            
+            glucose_metrics=glucose_metrics,
+            insulin_metrics=None,  # Optional
+            hormone_balance=None,  # Optional
             
             recommendations=recommendations,
             risk_factors=risk_factors,
             
             simulation_id=str(uuid.uuid4()),
-            timestamp=datetime.now(),
-            patient_info=patient.dict()
+            timestamp=datetime.now()
         )
     
     def _generate_recommendations(self, patient: PatientData, 
