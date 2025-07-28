@@ -1,32 +1,61 @@
-// src/components/SimulationDashboard.tsx
+// src/components/SimulationDashboard.tsx - Updated with new backend features
 import React, { useState, useEffect } from 'react';
 import Plot from 'react-plotly.js';
-import { PatientData, SimulationResult, SimulationParams } from '../types/diabetes';
+import { 
+  PatientData, 
+  SimulationResult, 
+  ExtendedSimulationResult,
+  SimulationParams, 
+  MealSchedule, 
+  DrugSchedule 
+} from '../types/diabetes';
 import { simulationAPI } from '../utils/api';
 import './SimulationDashboard.css';
 
 interface SimulationDashboardProps {
   patientData: PatientData;
+  mealSchedule?: MealSchedule;
+  drugSchedule?: DrugSchedule;
 }
 
-const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }) => {
-  const [simulationResult, setSimulationResult] = useState<SimulationResult | null>(null);
+const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ 
+  patientData, 
+  mealSchedule,
+  drugSchedule 
+}) => {
+  const [simulationResult, setSimulationResult] = useState<ExtendedSimulationResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showExtendedMetrics, setShowExtendedMetrics] = useState(false);
+  const [simulationDays, setSimulationDays] = useState<number | null>(null);
+  
   const [selectedMetrics, setSelectedMetrics] = useState({
     glucose: true,
     insulin: true,
     glucagon: false,
     glp1: false,
+    // Extended metrics
+    alpha_cells: false,
+    beta_cells: false,
+    glut2: false,
+    glut4: false,
+    stored_glucose: false,
+    oleic_acid: false,
+    palmitic_acid: false,
+    tnf_alpha: false,
   });
   
   const [simulationParams, setSimulationParams] = useState<SimulationParams>({
     patient_data: patientData,
     simulation_hours: 24,
+    simulation_days: simulationDays || undefined,
+    meal_schedule: mealSchedule,
     food_factor: 1.0,
     palmitic_factor: 1.0,
-    drug_dosage: 0.0,
+    drug_dosage: drugSchedule ? drugSchedule.initial_dose : 0.0,
+    drug_schedule: drugSchedule,
     show_optimal: true,
+    include_all_variables: true,
   });
 
   useEffect(() => {
@@ -37,7 +66,7 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
     setLoading(true);
     setError(null);
     try {
-      const result = await simulationAPI.runSimulation(simulationParams);
+      const result = await simulationAPI.runExtendedSimulation(simulationParams);
       setSimulationResult(result);
     } catch (error: any) {
       setError(error.message);
@@ -49,6 +78,19 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
   const handleParameterChange = (key: keyof SimulationParams, value: any) => {
     const newParams = { ...simulationParams, [key]: value };
     setSimulationParams(newParams);
+  };
+
+  const handleSimulationTypeChange = (type: 'hours' | 'days') => {
+    if (type === 'days') {
+      setSimulationDays(7);
+      handleParameterChange('simulation_days', 7);
+      handleParameterChange('simulation_hours', 168);
+    } else {
+      setSimulationDays(null);
+      handleParameterChange('simulation_days', undefined);
+      handleParameterChange('simulation_hours', 24);
+    }
+    debouncedSimulation();
   };
 
   const debouncedSimulation = () => {
@@ -64,74 +106,105 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
     if (!simulationResult) return [];
 
     const traces: any[] = [];
-    const { time_points, glucose, insulin, glucagon, glp1, optimal_glucose } = simulationResult;
+    const { 
+      time_points, glucose, insulin, glucagon, glp1, optimal_glucose,
+      alpha_cells, beta_cells, glut2, glut4, stored_glucose,
+      oleic_acid, palmitic_acid, tnf_alpha
+    } = simulationResult;
 
-    // Glucose trace
+    // Convert time to days if multi-day simulation
+    const timeInDays = simulationDays ? time_points.map(t => t / 24) : time_points;
+    const timeLabel = simulationDays ? 'Time (days)' : 'Time (hours)';
+
+    // Primary metrics
     if (selectedMetrics.glucose) {
       traces.push({
-        x: time_points,
+        x: timeInDays,
         y: glucose,
         type: 'scatter',
         mode: 'lines',
         name: 'Blood Glucose',
-        line: { color: '#e74c3c', width: 3 },
-        hovertemplate: 'Time: %{x:.1f}h<br>Glucose: %{y:.1f} mg/dL<extra></extra>',
+        line: { color: 'var(--rit-red)', width: 3 },
+        hovertemplate: `${timeLabel}: %{x:.1f}<br>Glucose: %{y:.1f} mg/dL<extra></extra>`,
       });
 
-      // Optimal glucose trace
       if (optimal_glucose && simulationParams.show_optimal) {
         traces.push({
-          x: time_points,
+          x: timeInDays,
           y: optimal_glucose,
           type: 'scatter',
           mode: 'lines',
           name: 'Optimal Glucose',
-          line: { color: '#27ae60', width: 2, dash: 'dot' },
-          hovertemplate: 'Time: %{x:.1f}h<br>Optimal: %{y:.1f} mg/dL<extra></extra>',
+          line: { color: 'var(--rit-green)', width: 2, dash: 'dot' },
+          hovertemplate: `${timeLabel}: %{x:.1f}<br>Optimal: %{y:.1f} mg/dL<extra></extra>`,
         });
       }
     }
 
-    // Insulin trace (secondary y-axis)
     if (selectedMetrics.insulin) {
       traces.push({
-        x: time_points,
+        x: timeInDays,
         y: insulin,
         type: 'scatter',
         mode: 'lines',
         name: 'Insulin',
-        line: { color: '#3498db', width: 3 },
+        line: { color: 'var(--rit-blue)', width: 3 },
         yaxis: 'y2',
-        hovertemplate: 'Time: %{x:.1f}h<br>Insulin: %{y:.1f} pmol/L<extra></extra>',
+        hovertemplate: `${timeLabel}: %{x:.1f}<br>Insulin: %{y:.1f} pmol/L<extra></extra>`,
       });
     }
 
-    // Glucagon trace
     if (selectedMetrics.glucagon) {
       traces.push({
-        x: time_points,
+        x: timeInDays,
         y: glucagon,
         type: 'scatter',
         mode: 'lines',
         name: 'Glucagon',
-        line: { color: '#9b59b6', width: 2 },
+        line: { color: 'var(--rit-purple)', width: 2 },
         yaxis: 'y3',
-        hovertemplate: 'Time: %{x:.1f}h<br>Glucagon: %{y:.1f} pg/mL<extra></extra>',
+        hovertemplate: `${timeLabel}: %{x:.1f}<br>Glucagon: %{y:.1f} pg/mL<extra></extra>`,
       });
     }
 
-    // GLP-1 trace
     if (selectedMetrics.glp1) {
       traces.push({
-        x: time_points,
+        x: timeInDays,
         y: glp1,
         type: 'scatter',
         mode: 'lines',
         name: 'GLP-1',
-        line: { color: '#f39c12', width: 2 },
+        line: { color: 'var(--rit-yellow)', width: 2 },
         yaxis: 'y4',
-        hovertemplate: 'Time: %{x:.1f}h<br>GLP-1: %{y:.1f} pmol/L<extra></extra>',
+        hovertemplate: `${timeLabel}: %{x:.1f}<br>GLP-1: %{y:.1f} pmol/L<extra></extra>`,
       });
+    }
+
+    // Extended metrics
+    if (showExtendedMetrics) {
+      if (selectedMetrics.beta_cells && beta_cells) {
+        traces.push({
+          x: timeInDays,
+          y: beta_cells,
+          type: 'scatter',
+          mode: 'lines',
+          name: 'β-cells',
+          line: { color: 'var(--rit-lime)', width: 2 },
+          visible: 'legendonly',
+        });
+      }
+
+      if (selectedMetrics.stored_glucose && stored_glucose) {
+        traces.push({
+          x: timeInDays,
+          y: stored_glucose,
+          type: 'scatter',
+          mode: 'lines',
+          name: 'Stored Glucose',
+          line: { color: 'var(--rit-warm-gray-dark)', width: 2 },
+          visible: 'legendonly',
+        });
+      }
     }
 
     return traces;
@@ -140,15 +213,17 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
   const getPlotLayout = () => {
     const yAxes: any = {};
     let axisCount = 0;
+    const timeLabel = simulationDays ? 'Time (days)' : 'Time (hours)';
+    const maxTime = simulationDays ? simulationParams.simulation_days! : simulationParams.simulation_hours;
 
     if (selectedMetrics.glucose) {
       axisCount++;
       yAxes.yaxis = {
         title: 'Glucose (mg/dL)',
         side: 'left',
-        color: '#e74c3c',
+        color: 'var(--rit-red)',
         showgrid: true,
-        gridcolor: '#f0f0f0',
+        gridcolor: 'var(--rit-gray-light)',
       };
     }
 
@@ -158,7 +233,7 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
         title: 'Insulin (pmol/L)',
         side: 'right',
         overlaying: 'y',
-        color: '#3498db',
+        color: 'var(--rit-blue)',
         showgrid: false,
       };
     }
@@ -170,7 +245,7 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
         side: 'right',
         overlaying: 'y',
         position: 0.85,
-        color: '#9b59b6',
+        color: 'var(--rit-purple)',
         showgrid: false,
       };
     }
@@ -182,43 +257,91 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
         side: 'right',
         overlaying: 'y',
         position: 0.9,
-        color: '#f39c12',
+        color: 'var(--rit-yellow)',
         showgrid: false,
       };
     }
 
     // Add meal time annotations
     const mealTimes = [];
-    for (let i = 0; i < simulationParams.simulation_hours; i += 6) {
-      if (i < simulationParams.simulation_hours) {
-        mealTimes.push({
-          x: i,
-          y: 0,
-          xref: 'x',
-          yref: 'paper',
-          text: '🍽️',
-          showarrow: true,
-          arrowhead: 2,
-          arrowsize: 1,
-          arrowwidth: 2,
-          arrowcolor: '#e67e22',
-          ax: 0,
-          ay: -30,
-          font: { size: 16 }
-        });
+    if (mealSchedule) {
+      const meals = [
+        { time: mealSchedule.breakfast_time, label: '🍳' },
+        { time: mealSchedule.lunch_time, label: '🥗' },
+        { time: mealSchedule.dinner_time, label: '🍽️' }
+      ];
+
+      for (const meal of meals) {
+        // Add annotations for each day if multi-day simulation
+        if (simulationDays) {
+          for (let day = 0; day < simulationDays; day++) {
+            mealTimes.push({
+              x: (meal.time + day * 24) / 24,
+              y: 0,
+              xref: 'x',
+              yref: 'paper',
+              text: meal.label,
+              showarrow: true,
+              arrowhead: 2,
+              arrowsize: 1,
+              arrowwidth: 2,
+              arrowcolor: 'var(--rit-orange)',
+              ax: 0,
+              ay: -30,
+              font: { size: 16 }
+            });
+          }
+        } else {
+          mealTimes.push({
+            x: meal.time,
+            y: 0,
+            xref: 'x',
+            yref: 'paper',
+            text: meal.label,
+            showarrow: true,
+            arrowhead: 2,
+            arrowsize: 1,
+            arrowwidth: 2,
+            arrowcolor: 'var(--rit-orange)',
+            ax: 0,
+            ay: -30,
+            font: { size: 16 }
+          });
+        }
+      }
+    } else {
+      // Default meal times
+      for (let i = 0; i < simulationParams.simulation_hours; i += 6) {
+        if (i < simulationParams.simulation_hours) {
+          mealTimes.push({
+            x: simulationDays ? i / 24 : i,
+            y: 0,
+            xref: 'x',
+            yref: 'paper',
+            text: '🍽️',
+            showarrow: true,
+            arrowhead: 2,
+            arrowsize: 1,
+            arrowwidth: 2,
+            arrowcolor: 'var(--rit-orange)',
+            ax: 0,
+            ay: -30,
+            font: { size: 16 }
+          });
+        }
       }
     }
 
     return {
       title: {
         text: `Glucose Dynamics - ${patientData.name}`,
-        font: { size: 20, color: '#333' },
+        font: { size: 20, color: 'var(--rit-black)' },
       },
       xaxis: {
-        title: 'Time (hours)',
+        title: timeLabel,
         showgrid: true,
-        gridcolor: '#f0f0f0',
-        range: [0, simulationParams.simulation_hours],
+        gridcolor: 'var(--rit-gray-light)',
+        range: [0, maxTime],
       },
       ...yAxes,
       legend: {
@@ -241,10 +364,10 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
           xref: 'x',
           yref: 'y',
           x0: 0,
-          x1: simulationParams.simulation_hours,
+          x1: maxTime,
           y0: 70,
           y1: 140,
-          fillcolor: 'rgba(39, 174, 96, 0.1)',
+          fillcolor: 'rgba(132, 189, 0, 0.1)',
           line: { width: 0 },
           layer: 'below',
         }
@@ -255,22 +378,43 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
   const downloadData = () => {
     if (!simulationResult) return;
     
+    const headers = ['Time (hours)', 'Glucose (mg/dL)', 'Insulin (pmol/L)', 'Glucagon (pg/mL)', 'GLP-1 (pmol/L)'];
+    const extendedHeaders = showExtendedMetrics ? [
+      'Alpha Cells', 'Beta Cells', 'GLUT-2', 'GLUT-4', 
+      'Stored Glucose', 'Oleic Acid', 'Palmitic Acid', 'TNF-α'
+    ] : [];
+    
     const csvContent = [
-      ['Time (hours)', 'Glucose (mg/dL)', 'Insulin (pmol/L)', 'Glucagon (pg/mL)', 'GLP-1 (pmol/L)'],
-      ...simulationResult.time_points.map((time, i) => [
-        time.toFixed(2),
-        simulationResult.glucose[i].toFixed(2),
-        simulationResult.insulin[i].toFixed(2),
-        simulationResult.glucagon[i].toFixed(2),
-        simulationResult.glp1[i].toFixed(2),
-      ])
+      [...headers, ...extendedHeaders],
+      ...simulationResult.time_points.map((time, i) => {
+        const baseData = [
+          time.toFixed(2),
+          simulationResult.glucose[i].toFixed(2),
+          simulationResult.insulin[i].toFixed(2),
+          simulationResult.glucagon[i].toFixed(2),
+          simulationResult.glp1[i].toFixed(2),
+        ];
+        
+        const extendedData = showExtendedMetrics ? [
+          simulationResult.alpha_cells?.[i]?.toFixed(2) || '',
+          simulationResult.beta_cells?.[i]?.toFixed(2) || '',
+          simulationResult.glut2?.[i]?.toFixed(2) || '',
+          simulationResult.glut4?.[i]?.toFixed(2) || '',
+          simulationResult.stored_glucose?.[i]?.toFixed(2) || '',
+          simulationResult.oleic_acid?.[i]?.toFixed(2) || '',
+          simulationResult.palmitic_acid?.[i]?.toFixed(2) || '',
+          simulationResult.tnf_alpha?.[i]?.toFixed(2) || '',
+        ] : [];
+        
+        return [...baseData, ...extendedData];
+      })
     ].map(row => row.join(',')).join('\n');
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `diabetes_simulation_${patientData.name.replace(/\s+/g, '_')}.csv`;
+    a.download = `diabetes_simulation_${patientData.name.replace(/\s+/g, '_')}_extended.csv`;
     a.click();
     window.URL.revokeObjectURL(url);
   };
@@ -286,6 +430,8 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
             {simulationResult && (
               <>
                 <span>A1C: {simulationResult.a1c_estimate}%</span>
+                <span>Avg Glucose: {simulationResult.avg_glucose.toFixed(1)} mg/dL</span>
+                <span>Time in Range: {simulationResult.time_in_range.toFixed(1)}%</span>
                 <span className={`diagnosis ${simulationResult.diagnosis.toLowerCase()}`}>
                   {simulationResult.diagnosis}
                 </span>
@@ -307,16 +453,56 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
         <div className="parameter-panel">
           <h3>Simulation Parameters</h3>
           
+          {/* Simulation Duration Toggle */}
           <div className="parameter-group">
-            <label>Simulation Duration: {simulationParams.simulation_hours} hours</label>
+            <label>Simulation Type</label>
+            <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+              <button 
+                className={`btn-secondary ${!simulationDays ? 'active' : ''}`}
+                onClick={() => handleSimulationTypeChange('hours')}
+                style={{ 
+                  flex: 1, 
+                  background: !simulationDays ? 'var(--rit-orange)' : 'white',
+                  color: !simulationDays ? 'white' : 'var(--rit-orange)'
+                }}
+              >
+                Hours
+              </button>
+              <button 
+                className={`btn-secondary ${simulationDays ? 'active' : ''}`}
+                onClick={() => handleSimulationTypeChange('days')}
+                style={{ 
+                  flex: 1,
+                  background: simulationDays ? 'var(--rit-orange)' : 'white',
+                  color: simulationDays ? 'white' : 'var(--rit-orange)'
+                }}
+              >
+                Days
+              </button>
+            </div>
+          </div>
+
+          <div className="parameter-group">
+            <label>
+              {simulationDays 
+                ? `Simulation Days: ${simulationDays}` 
+                : `Simulation Hours: ${simulationParams.simulation_hours}`}
+            </label>
             <input
               type="range"
-              min="6"
-              max="72"
-              step="6"
-              value={simulationParams.simulation_hours}
+              min={simulationDays ? 1 : 6}
+              max={simulationDays ? 30 : 72}
+              step={simulationDays ? 1 : 6}
+              value={simulationDays || simulationParams.simulation_hours}
               onChange={(e) => {
-                handleParameterChange('simulation_hours', parseInt(e.target.value));
+                const value = parseInt(e.target.value);
+                if (simulationDays) {
+                  setSimulationDays(value);
+                  handleParameterChange('simulation_days', value);
+                  handleParameterChange('simulation_hours', value * 24);
+                } else {
+                  handleParameterChange('simulation_hours', value);
+                }
                 debouncedSimulation();
               }}
             />
@@ -367,29 +553,102 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
                 debouncedSimulation();
               }}
             />
-            <small>0 = no medication, 1.0+ = GLP-1 agonist therapy</small>
+            <small>
+              {drugSchedule 
+                ? `${drugSchedule.drug_type} therapy` 
+                : '0 = no medication, 1.0+ = GLP-1 agonist'}
+            </small>
           </div>
 
           <div className="metric-selector">
             <h4>Display Metrics</h4>
             <div className="metric-checkboxes">
-              {Object.entries(selectedMetrics).map(([metric, selected]) => (
-                <label key={metric} className="metric-checkbox">
+              <h5 style={{ color: 'var(--rit-gray-dark)', fontSize: '14px', marginBottom: '0.5rem' }}>
+                Primary Metrics
+              </h5>
+              {Object.entries({
+                glucose: 'Glucose',
+                insulin: 'Insulin', 
+                glucagon: 'Glucagon',
+                glp1: 'GLP-1'
+              }).map(([key, label]) => (
+                <label key={key} className="metric-checkbox">
                   <input
                     type="checkbox"
-                    checked={selected}
+                    checked={selectedMetrics[key as keyof typeof selectedMetrics]}
                     onChange={(e) =>
                       setSelectedMetrics(prev => ({
                         ...prev,
-                        [metric]: e.target.checked
+                        [key]: e.target.checked
                       }))
                     }
                   />
-                  <span className={`metric-label ${metric}`}>
-                    {metric.charAt(0).toUpperCase() + metric.slice(1)}
+                  <span className={`metric-label ${key}`}>
+                    {label}
                   </span>
                 </label>
               ))}
+              
+              {/* Extended Metrics Toggle */}
+              <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--rit-gray-light)' }}>
+                <label className="metric-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={showExtendedMetrics}
+                    onChange={(e) => setShowExtendedMetrics(e.target.checked)}
+                  />
+                  <span style={{ fontWeight: 600 }}>Show Extended Metrics</span>
+                </label>
+              </div>
+              
+              {showExtendedMetrics && (
+                <>
+                  <h5 style={{ color: 'var(--rit-gray-dark)', fontSize: '14px', margin: '0.5rem 0' }}>
+                    Cell Populations
+                  </h5>
+                  {Object.entries({
+                    alpha_cells: 'α-cells',
+                    beta_cells: 'β-cells'
+                  }).map(([key, label]) => (
+                    <label key={key} className="metric-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={selectedMetrics[key as keyof typeof selectedMetrics]}
+                        onChange={(e) =>
+                          setSelectedMetrics(prev => ({
+                            ...prev,
+                            [key]: e.target.checked
+                          }))
+                        }
+                      />
+                      <span className="metric-label">{label}</span>
+                    </label>
+                  ))}
+                  
+                  <h5 style={{ color: 'var(--rit-gray-dark)', fontSize: '14px', margin: '0.5rem 0' }}>
+                    Transport & Storage
+                  </h5>
+                  {Object.entries({
+                    glut2: 'GLUT-2',
+                    glut4: 'GLUT-4',
+                    stored_glucose: 'Stored Glucose'
+                  }).map(([key, label]) => (
+                    <label key={key} className="metric-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={selectedMetrics[key as keyof typeof selectedMetrics]}
+                        onChange={(e) =>
+                          setSelectedMetrics(prev => ({
+                            ...prev,
+                            [key]: e.target.checked
+                          }))
+                        }
+                      />
+                      <span className="metric-label">{label}</span>
+                    </label>
+                  ))}
+                </>
+              )}
             </div>
           </div>
 
@@ -458,7 +717,7 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
             <div className="summary-grid">
               <div className="summary-item">
                 <label>Average Glucose:</label>
-                <span>{(simulationResult.glucose.reduce((a, b) => a + b, 0) / simulationResult.glucose.length).toFixed(1)} mg/dL</span>
+                <span>{simulationResult.avg_glucose.toFixed(1)} mg/dL</span>
               </div>
               <div className="summary-item">
                 <label>Peak Glucose:</label>
@@ -466,10 +725,11 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
               </div>
               <div className="summary-item">
                 <label>Glucose Variability:</label>
-                <span>{Math.sqrt(simulationResult.glucose.reduce((sum, val, _, arr) => {
-                  const mean = arr.reduce((a, b) => a + b) / arr.length;
-                  return sum + Math.pow(val - mean, 2);
-                }, 0) / simulationResult.glucose.length).toFixed(1)} mg/dL</span>
+                <span>{simulationResult.glucose_variability.toFixed(1)} mg/dL</span>
+              </div>
+              <div className="summary-item">
+                <label>Time in Range (70-140):</label>
+                <span>{simulationResult.time_in_range.toFixed(1)}%</span>
               </div>
               <div className="summary-item">
                 <label>A1C Estimate:</label>
@@ -486,6 +746,14 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({ patientData }
               <div className="summary-item">
                 <label>Data Points:</label>
                 <span>{simulationResult.time_points.length}</span>
+              </div>
+              <div className="summary-item">
+                <label>Simulation Duration:</label>
+                <span>
+                  {simulationDays 
+                    ? `${simulationDays} days` 
+                    : `${simulationParams.simulation_hours} hours`}
+                </span>
               </div>
             </div>
           </div>

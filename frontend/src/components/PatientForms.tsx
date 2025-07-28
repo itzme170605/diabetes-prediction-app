@@ -1,10 +1,10 @@
-// src/components/PatientForm.tsx
+// src/components/PatientForm.tsx - Updated with new backend features
 import React, { useState } from 'react';
-import { PatientData } from '../types/diabetes';
+import { PatientData, MealSchedule, DrugSchedule } from '../types/diabetes';
 import './PatientForm.css';
 
 interface PatientFormProps {
-  onSubmit: (data: PatientData) => void;
+  onSubmit: (data: PatientData, mealSchedule?: MealSchedule, drugSchedule?: DrugSchedule) => void;
 }
 
 const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
@@ -24,11 +24,35 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
     a1c_level: null,
   });
 
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [useMealSchedule, setUseMealSchedule] = useState(false);
+  const [useDrugSchedule, setUseDrugSchedule] = useState(false);
+
+  const [mealSchedule, setMealSchedule] = useState<MealSchedule>({
+    breakfast_time: 0,
+    breakfast_factor: 1.0,
+    lunch_time: 6,
+    lunch_factor: 1.0,
+    dinner_time: 12,
+    dinner_factor: 2.0,
+  });
+
+  const [drugSchedule, setDrugSchedule] = useState<DrugSchedule>({
+    drug_type: 'GLP-1_agonist',
+    initial_dose: 0.5,
+    dose_increase_week: 4,
+    increased_dose: 1.0,
+  });
+
   const [showModal, setShowModal] = useState(true);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit(
+      formData, 
+      useMealSchedule ? mealSchedule : undefined,
+      useDrugSchedule ? drugSchedule : undefined
+    );
     setShowModal(false);
   };
 
@@ -37,6 +61,20 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
     setFormData(prev => ({
       ...prev,
       [name]: type === 'number' ? parseFloat(value) || 0 : value
+    }));
+  };
+
+  const handleMealScheduleChange = (field: keyof MealSchedule, value: number) => {
+    setMealSchedule(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleDrugScheduleChange = (field: keyof DrugSchedule, value: string | number) => {
+    setDrugSchedule(prev => ({
+      ...prev,
+      [field]: value
     }));
   };
 
@@ -223,6 +261,157 @@ const PatientForm: React.FC<PatientFormProps> = ({ onSubmit }) => {
                   <option value="vigorous">Vigorous</option>
                 </select>
               </div>
+            </div>
+
+            {/* Advanced Options Toggle */}
+            <div className="advanced-section">
+              <div className="advanced-toggle" onClick={() => setShowAdvanced(!showAdvanced)}>
+                <h4>Advanced Options</h4>
+                <span>{showAdvanced ? '▼' : '▶'}</span>
+              </div>
+
+              {showAdvanced && (
+                <div className="advanced-content">
+                  {/* Meal Schedule */}
+                  <div className="meal-schedule-section">
+                    <div className="drug-toggle">
+                      <input
+                        type="checkbox"
+                        id="use-meal-schedule"
+                        checked={useMealSchedule}
+                        onChange={(e) => setUseMealSchedule(e.target.checked)}
+                      />
+                      <label htmlFor="use-meal-schedule">
+                        <h4>Custom Meal Schedule</h4>
+                      </label>
+                    </div>
+
+                    {useMealSchedule && (
+                      <>
+                        <div className="meal-input-group">
+                          <h5>Breakfast</h5>
+                          <div className="form-group">
+                            <label>Time (hours from start)</label>
+                            <input
+                              type="number"
+                              value={mealSchedule.breakfast_time}
+                              onChange={(e) => handleMealScheduleChange('breakfast_time', parseFloat(e.target.value))}
+                              min="0"
+                              max="24"
+                              step="0.5"
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label>Portion Size</label>
+                            <input
+                              type="number"
+                              value={mealSchedule.breakfast_factor}
+                              onChange={(e) => handleMealScheduleChange('breakfast_factor', parseFloat(e.target.value))}
+                              min="0.5"
+                              max="3"
+                              step="0.1"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="meal-input-group">
+                          <h5>Lunch</h5>
+                          <div className="form-group">
+                            <label>Time (hours from start)</label>
+                            <input
+                              type="number"
+                              value={mealSchedule.lunch_time}
+                              onChange={(e) => handleMealScheduleChange('lunch_time', parseFloat(e.target.value))}
+                              min="0"
+                              max="24"
+                              step="0.5"
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label>Portion Size</label>
+                            <input
+                              type="number"
+                              value={mealSchedule.lunch_factor}
+                              onChange={(e) => handleMealScheduleChange('lunch_factor', parseFloat(e.target.value))}
+                              min="0.5"
+                              max="3"
+                              step="0.1"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="meal-input-group">
+                          <h5>Dinner</h5>
+                          <div className="form-group">
+                            <label>Time (hours from start)</label>
+                            <input
+                              type="number"
+                              value={mealSchedule.dinner_time}
+                              onChange={(e) => handleMealScheduleChange('dinner_time', parseFloat(e.target.value))}
+                              min="0"
+                              max="24"
+                              step="0.5"
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label>Portion Size</label>
+                            <input
+                              type="number"
+                              value={mealSchedule.dinner_factor}
+                              onChange={(e) => handleMealScheduleChange('dinner_factor', parseFloat(e.target.value))}
+                              min="0.5"
+                              max="3"
+                              step="0.1"
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Drug Schedule */}
+                  <div className="drug-schedule-section">
+                    <div className="drug-toggle">
+                      <input
+                        type="checkbox"
+                        id="use-drug-schedule"
+                        checked={useDrugSchedule}
+                        onChange={(e) => setUseDrugSchedule(e.target.checked)}
+                      />
+                      <label htmlFor="use-drug-schedule">
+                        <h4>GLP-1 Agonist Treatment</h4>
+                      </label>
+                    </div>
+
+                    {useDrugSchedule && (
+                      <div className="form-grid">
+                        <div className="form-group">
+                          <label>Drug Type</label>
+                          <select
+                            value={drugSchedule.drug_type}
+                            onChange={(e) => handleDrugScheduleChange('drug_type', e.target.value)}
+                          >
+                            <option value="GLP-1_agonist">GLP-1 Agonist (Generic)</option>
+                            <option value="Mounjaro">Mounjaro (Tirzepatide)</option>
+                            <option value="Ozempic">Ozempic (Semaglutide)</option>
+                          </select>
+                        </div>
+                        <div className="form-group">
+                          <label>Initial Dose</label>
+                          <input
+                            type="number"
+                            value={drugSchedule.initial_dose}
+                            onChange={(e) => handleDrugScheduleChange('initial_dose', parseFloat(e.target.value))}
+                            min="0"
+                            max="2"
+                            step="0.1"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

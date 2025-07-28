@@ -1,4 +1,4 @@
-/* src/components/PatientForm.css */
+/* src/components/PatientForm.css - Updated with RIT Brand Colors */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -14,7 +14,7 @@
 }
 
 .patient-form-modal {
-  background: white;
+  background: var(--rit-white);
   border-radius: 12px;
   padding: 2rem;
   max-width: 800px;
@@ -25,7 +25,7 @@
 }
 
 .patient-form-modal h2 {
-  color: #e67e22;
+  color: var(--rit-orange);
   font-size: 28px;
   margin-bottom: 8px;
   text-align: center;
@@ -33,7 +33,7 @@
 
 .form-description {
   text-align: center;
-  color: #666;
+  color: var(--rit-gray-dark);
   margin-bottom: 2rem;
   font-size: 16px;
 }
@@ -45,18 +45,18 @@
 }
 
 .form-section {
-  border: 1px solid #eee;
+  border: 1px solid var(--rit-gray-light);
   border-radius: 8px;
   padding: 1.5rem;
-  background: #fafafa;
+  background: var(--rit-warm-gray-light);
 }
 
 .form-section h3 {
-  color: #333;
+  color: var(--rit-black);
   font-size: 18px;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e67e22;
+  border-bottom: 2px solid var(--rit-orange);
 }
 
 .form-grid {
@@ -73,49 +73,32 @@
 .form-group label {
   font-weight: 600;
   margin-bottom: 8px;
-  color: #333;
+  color: var(--rit-black);
   font-size: 14px;
 }
 
 .form-group input,
 .form-group select {
   padding: 12px;
-  border: 2px solid #ddd;
+  border: 2px solid var(--rit-gray-light);
   border-radius: 6px;
   font-size: 16px;
   transition: border-color 0.3s ease;
-  background: white;
-  color: #333;
+  background: var(--rit-white);
+  color: var(--rit-black);
   font-family: inherit;
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #e67e22;
-  box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.1);
-  background: white;
-  color: #333;
+  border-color: var(--rit-orange);
+  box-shadow: 0 0 0 3px rgba(247, 105, 2, 0.1);
 }
 
 .form-group input::placeholder {
-  color: #999;
+  color: var(--rit-gray-medium);
   font-size: 14px;
-  opacity: 0.7;
-}
-
-.form-group input::-webkit-input-placeholder {
-  color: #999;
-  opacity: 0.7;
-}
-
-.form-group input::-moz-placeholder {
-  color: #999;
-  opacity: 0.7;
-}
-
-.form-group input:-ms-input-placeholder {
-  color: #999;
   opacity: 0.7;
 }
 
@@ -124,17 +107,17 @@
 }
 
 .form-group select option {
-  background: white;
-  color: #333;
+  background: var(--rit-white);
+  color: var(--rit-black);
 }
 
 .bmi-display {
   padding: 12px;
-  background: #f8f9fa;
-  border: 2px solid #e9ecef;
+  background: var(--rit-white);
+  border: 2px solid var(--rit-gray-light);
   border-radius: 6px;
   font-weight: 600;
-  color: #e67e22;
+  color: var(--rit-orange);
   text-align: center;
   font-size: 16px;
 }
@@ -145,25 +128,53 @@
   margin-top: 1rem;
 }
 
-.btn-primary {
-  background: #e67e22;
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 6px;
+/* Meal Schedule Section */
+.meal-schedule-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rit-gray-light);
+}
+
+.meal-schedule-section h4 {
+  color: var(--rit-gray-dark);
   font-size: 16px;
-  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.meal-input-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: var(--rit-white);
+  border-radius: 6px;
+  border: 1px solid var(--rit-gray-light);
+}
+
+.meal-input-group h5 {
+  grid-column: 1 / -1;
+  color: var(--rit-orange);
+  font-size: 14px;
+  margin-bottom: 0.5rem;
+}
+
+/* Drug Schedule Section */
+.drug-schedule-section {
+  margin-top: 1rem;
+}
+
+.drug-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.drug-toggle input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.btn-primary:hover {
-  background: #d35400;
-}
-
-.btn-primary:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.3);
 }
 
 /* Ensure input text is always visible */
@@ -175,8 +186,8 @@ select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
-  background-color: white !important;
-  color: #333 !important;
+  background-color: var(--rit-white) !important;
+  color: var(--rit-black) !important;
 }
 
 /* Fix for autofill styling */
@@ -184,8 +195,8 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px white inset !important;
-  -webkit-text-fill-color: #333 !important;
+  -webkit-box-shadow: 0 0 0 30px var(--rit-white) inset !important;
+  -webkit-text-fill-color: var(--rit-black) !important;
 }
 
 /* Responsive Design */
@@ -199,6 +210,10 @@ input:-webkit-autofill:active {
     grid-template-columns: 1fr;
   }
   
+  .meal-input-group {
+    grid-template-columns: 1fr;
+  }
+  
   .patient-form-modal h2 {
     font-size: 24px;
   }
@@ -207,17 +222,4 @@ input:-webkit-autofill:active {
   .form-group select {
     font-size: 16px; /* Prevents zoom on iOS */
   }
-}
-
-/* Additional fixes for better visibility */
-.form-group input:not(:placeholder-shown) {
-  color: #333 !important;
-}
-
-.form-group input:valid {
-  color: #333 !important;
-}
-
-.form-group input:invalid {
-  color: #333 !important;
 }

@@ -1,4 +1,33 @@
-/* src/App.css */
+/* src/App.css - Updated with RIT Brand Colors */
+:root {
+  /* RIT Primary Palette */
+  --rit-orange: #F76902;
+  --rit-white: #FFFFFF;
+  
+  /* RIT Secondary Palette */
+  --rit-black: #000000;
+  --rit-gray-light: #D0D3D4;
+  --rit-gray-medium: #A2AAAD;
+  --rit-gray-dark: #7C878E;
+  --rit-warm-gray-light: #D7D2CB;
+  --rit-warm-gray-dark: #ACA39A;
+  
+  /* RIT Accent Colors */
+  --rit-green: #84BD00;
+  --rit-lime: #C4D600;
+  --rit-blue: #009CBD;
+  --rit-purple: #7D55C7;
+  --rit-red: #DA291C;
+  --rit-yellow: #F6BE00;
+  
+  /* Application-specific mappings */
+  --primary-color: var(--rit-orange);
+  --danger-color: var(--rit-red);
+  --success-color: var(--rit-green);
+  --warning-color: var(--rit-yellow);
+  --info-color: var(--rit-blue);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -10,8 +39,8 @@ body {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fafafa;
-  color: #333;
+  background-color: var(--rit-white);
+  color: var(--rit-black);
 }
 
 .App {
@@ -22,14 +51,14 @@ body {
 
 /* Enhanced Navigation Bar */
 .navbar {
-  background: linear-gradient(135deg, #e67e22, #d35400);
+  background: var(--rit-orange);
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-  color: white;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+  color: var(--rit-white);
 }
 
 .navbar-container {
@@ -73,7 +102,7 @@ body {
 .nav-link {
   background: none;
   border: none;
-  color: white;
+  color: var(--rit-white);
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
@@ -92,8 +121,8 @@ body {
 }
 
 .btn-try-now {
-  background: white;
-  color: #e67e22;
+  background: var(--rit-white);
+  color: var(--rit-orange);
   border: none;
   padding: 10px 20px;
   border-radius: 6px;
@@ -103,7 +132,7 @@ body {
 }
 
 .btn-try-now:hover {
-  background: #f8f9fa;
+  background: var(--rit-warm-gray-light);
   transform: translateY(-1px);
 }
 
@@ -121,19 +150,19 @@ body {
 }
 
 .api-status.connected {
-  background: rgba(39, 174, 96, 0.2);
-  color: #27ae60;
+  background: rgba(132, 189, 0, 0.2);
+  color: var(--rit-green);
 }
 
 .api-status.disconnected {
-  background: rgba(231, 76, 60, 0.2);
-  color: #e74c3c;
+  background: rgba(218, 41, 28, 0.2);
+  color: var(--rit-red);
 }
 
 /* Button Styles */
 .btn-primary {
-  background: linear-gradient(135deg, #e67e22, #d35400);
-  color: white;
+  background: var(--rit-orange);
+  color: var(--rit-white);
   border: none;
   padding: 12px 24px;
   border-radius: 8px;
@@ -141,19 +170,19 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(230, 126, 34, 0.3);
+  box-shadow: 0 2px 4px rgba(247, 105, 2, 0.3);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, #d35400, #c0392b);
+  background: var(--rit-red);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(230, 126, 34, 0.4);
+  box-shadow: 0 4px 8px rgba(247, 105, 2, 0.4);
 }
 
 .btn-secondary {
-  background: white;
-  color: #e67e22;
-  border: 2px solid #e67e22;
+  background: var(--rit-white);
+  color: var(--rit-orange);
+  border: 2px solid var(--rit-orange);
   padding: 10px 20px;
   border-radius: 8px;
   font-size: 14px;
@@ -163,13 +192,13 @@ body {
 }
 
 .btn-secondary:hover {
-  background: #e67e22;
-  color: white;
+  background: var(--rit-orange);
+  color: var(--rit-white);
 }
 
 .btn-save {
-  background: #27ae60;
-  color: white;
+  background: var(--rit-green);
+  color: var(--rit-white);
   border: none;
   padding: 10px 16px;
   border-radius: 6px;
@@ -182,13 +211,15 @@ body {
 }
 
 .btn-save:hover {
-  background: #229954;
+  background: var(--rit-lime);
+  color: var(--rit-black);
 }
 
 /* Main Content */
 .main-content {
   flex: 1;
   padding: 0;
+  background-color: var(--rit-white);
 }
 
 /* Container */
@@ -210,21 +241,21 @@ body {
 }
 
 .error-message h2 {
-  color: #e74c3c;
+  color: var(--rit-red);
   margin-bottom: 1rem;
 }
 
 .error-message p {
-  color: #666;
+  color: var(--rit-gray-dark);
   margin-bottom: 0.5rem;
 }
 
 .error-message code {
-  background: #f1f2f6;
+  background: var(--rit-gray-light);
   padding: 4px 8px;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
-  color: #2c3e50;
+  color: var(--rit-black);
 }
 
 /* Loading Spinner */
@@ -239,8 +270,8 @@ body {
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #e67e22;
+  border: 4px solid var(--rit-gray-light);
+  border-top: 4px solid var(--rit-orange);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 1rem;
@@ -249,6 +280,76 @@ body {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Footer */
+.footer {
+  background-color: var(--rit-black);
+  color: var(--rit-white);
+  padding: 3rem 0 1rem;
+  margin-top: 4rem;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.footer-section h3 {
+  color: var(--rit-orange);
+  margin-bottom: 1rem;
+  font-size: 18px;
+}
+
+.footer-section p {
+  color: var(--rit-gray-light);
+  line-height: 1.6;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-section button {
+  background: none;
+  border: none;
+  color: var(--rit-gray-light);
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.footer-section button:hover {
+  color: var(--rit-orange);
+}
+
+.citation {
+  font-size: 12px;
+  color: var(--rit-gray-medium);
+  font-style: italic;
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--rit-gray-dark);
+  padding-top: 1rem;
+  text-align: center;
+  color: var(--rit-gray-medium);
+  font-size: 14px;
 }
 
 /* Responsive Design */
@@ -265,117 +366,8 @@ body {
   .container {
     padding: 0 1rem;
   }
-}
-
-.api-status {
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-weight: 600;
-}
-
-.api-status.connected {
-  background: rgba(39, 174, 96, 0.2);
-  color: #27ae60;
-}
-
-.api-status.disconnected {
-  background: rgba(231, 76, 60, 0.2);
-  color: #e74c3c;
-}
-
-/* Button Styles */
-.btn-primary {
-  background: linear-gradient(135deg, #e67e22, #d35400);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(230, 126, 34, 0.3);
-}
-
-.btn-primary:hover {
-  background: linear-gradient(135deg, #d35400, #c0392b);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(230, 126, 34, 0.4);
-}
-
-.btn-secondary {
-  background: white;
-  color: #e67e22;
-  border: 2px solid #e67e22;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-secondary:hover {
-  background: #e67e22;
-  color: white;
-}
-
-/* Main Content */
-.main-content {
-  flex: 1;
-  padding: 0;
-}
-
-/* Error Message */
-.error-message {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  text-align: center;
-  padding: 2rem;
-}
-
-.error-message h2 {
-  color: #e74c3c;
-  margin-bottom: 1rem;
-}
-
-.error-message p {
-  color: #666;
-  margin-bottom: 0.5rem;
-}
-
-.error-message code {
-  background: #f1f2f6;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-family: 'Courier New', monospace;
-  color: #2c3e50;
-}
-
-/* Loading Spinner */
-.loading-spinner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #e67e22;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 1rem;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  
+  .footer-content {
+    grid-template-columns: 1fr;
+  }
 }

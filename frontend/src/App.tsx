@@ -1,4 +1,4 @@
-// src/App.tsx - Updated with homepage navigation
+// src/App.tsx - Updated to handle meal and drug schedules
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import HomePage from './pages/HomePage';
@@ -6,7 +6,7 @@ import AboutPage from './pages/AboutPage';
 import ResearchPage from './pages/ResearchPage';
 import PatientForm from './components/PatientForms';
 import SimulationDashboard from './components/SimulationDashboard';
-import { PatientData } from './types/diabetes';
+import { PatientData, MealSchedule, DrugSchedule } from './types/diabetes';
 import { simulationAPI } from './utils/api';
 
 type AppView = 'home' | 'about' | 'research' | 'simulation' | 'form';
@@ -14,6 +14,8 @@ type AppView = 'home' | 'about' | 'research' | 'simulation' | 'form';
 function App() {
   const [currentView, setCurrentView] = useState<AppView>('home');
   const [patientData, setPatientData] = useState<PatientData | null>(null);
+  const [mealSchedule, setMealSchedule] = useState<MealSchedule | undefined>();
+  const [drugSchedule, setDrugSchedule] = useState<DrugSchedule | undefined>();
   const [apiConnected, setApiConnected] = useState<boolean>(false);
 
   useEffect(() => {
@@ -25,8 +27,14 @@ function App() {
     testConnection();
   }, []);
 
-  const handlePatientSubmit = (data: PatientData) => {
+  const handlePatientSubmit = (
+    data: PatientData, 
+    mealSchedule?: MealSchedule, 
+    drugSchedule?: DrugSchedule
+  ) => {
     setPatientData(data);
+    setMealSchedule(mealSchedule);
+    setDrugSchedule(drugSchedule);
     setCurrentView('simulation');
   };
 
@@ -37,6 +45,8 @@ function App() {
   const handleBackToHome = () => {
     setCurrentView('home');
     setPatientData(null);
+    setMealSchedule(undefined);
+    setDrugSchedule(undefined);
   };
 
   const renderCurrentView = () => {
@@ -50,7 +60,13 @@ function App() {
       case 'form':
         return <PatientForm onSubmit={handlePatientSubmit} />;
       case 'simulation':
-        return patientData ? <SimulationDashboard patientData={patientData} /> : null;
+        return patientData ? (
+          <SimulationDashboard 
+            patientData={patientData} 
+            mealSchedule={mealSchedule}
+            drugSchedule={drugSchedule}
+          />
+        ) : null;
       default:
         return <HomePage onTryNow={handleTryNow} onLearnMore={() => setCurrentView('research')} />;
     }
@@ -62,7 +78,7 @@ function App() {
       <nav className="navbar">
         <div className="navbar-container">
           <div className="navbar-logo" onClick={handleBackToHome}>
-            <h1>NourLab</h1>
+            <h1>DiabetesScope</h1>
             <span>Glucose Dynamics Simulator</span>
           </div>
           <div className="navbar-menu">
@@ -105,7 +121,7 @@ function App() {
           <div className="error-message">
             <h2>⚠️ Backend Connection Required</h2>
             <p>Please make sure the backend server is running on localhost:8000</p>
-            <p>Run: <code>cd backend && python run.py</code></p>
+            <p>Run: <code>cd backend && python ./app/main.py</code></p>
             <button onClick={() => window.location.reload()} className="btn-primary">
               Retry Connection
             </button>
@@ -121,8 +137,8 @@ function App() {
           <div className="footer-container">
             <div className="footer-content">
               <div className="footer-section">
-                <h3>NourLab</h3>
-                <p>mathematical modeling research.</p>
+                <h3>DiabetesScope</h3>
+                <p>Advanced mathematical modeling of glucose dynamics in diabetes.</p>
               </div>
               <div className="footer-section">
                 <h3>Quick Links</h3>
@@ -142,7 +158,7 @@ function App() {
               </div>
             </div>
             <div className="footer-bottom">
-              <p>Educational and Research Use Only.</p>
+              <p>© 2024 Rochester Institute of Technology. Educational and Research Use Only.</p>
             </div>
           </div>
         </footer>
