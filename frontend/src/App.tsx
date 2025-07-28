@@ -155,6 +155,10 @@ function App() {
                   and efficacy of anti-diabetic weight reducing drug. <em>Journal of Theoretical Biology</em>, 
                   581, 111756.
                 </p>
+                <p>
+                  Research reported in this publication was supported by the National Institute Of General Medical Sciences of the National Institutes of Health under Award Number R16GM154782.
+                  The content is solely the responsibility of the authors and does not necessarily represent the official views of the National Institutes of Health.
+                </p>
               </div>
             </div>
             <div className="footer-bottom">

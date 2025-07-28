@@ -178,6 +178,10 @@ const HomePage: React.FC<HomePageProps> = ({ onTryNow, onLearnMore }) => {
                 The model incorporates 12 physiological variables and over 50 parameters 
                 to accurately simulate glucose dynamics in health and disease.
               </p>
+              <p>
+                Research reported in this publication was supported by the National Institute Of General Medical Sciences of the National Institutes of Health under Award Number R16GM154782. 
+                The content is solely the responsibility of the authors and does not necessarily represent the official views of the National Institutes of Health.
+              </p>
               <div className="research-stats">
                 <div className="stat">
                   <div className="stat-number">12</div>

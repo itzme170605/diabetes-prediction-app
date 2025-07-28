@@ -464,3 +464,90 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Meal Dosing Grid */
+.meal-dosing-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.dose-input {
+  padding: 0.75rem;
+  background: var(--rit-warm-gray-light);
+  border-radius: 6px;
+  border: 1px solid var(--rit-gray-light);
+}
+
+.dose-input label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--rit-gray-dark);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.dose-input input[type="range"] {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--rit-gray-light);
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.dose-input input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--rit-orange);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.dose-input input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--rit-orange);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Comparison Mode Styles */
+.dashboard-actions button.btn-secondary:first-child {
+  background: var(--rit-white);
+  color: var(--rit-purple);
+  border-color: var(--rit-purple);
+}
+
+.dashboard-actions button.btn-secondary:first-child:hover {
+  background: var(--rit-purple);
+  color: var(--rit-white);
+}
+
+/* Extended Summary Grid for Comparison */
+.summary-grid h4 {
+  color: var(--rit-orange);
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .meal-dosing-grid {
+    gap: 0.25rem;
+  }
+  
+  .dose-input {
+    padding: 0.5rem;
+  }
+  
+  .dose-input label {
+    font-size: 12px;
+  }
+}
