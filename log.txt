@@ -1,0 +1,53 @@
+commit 5f9747b997446df378f1adbbfe09218d7c2e876a
+Author: Jatin <j2130132806@gmail.com>
+Date:   Mon Jul 28 18:53:58 2025 -0400
+
+    work in progress glucose flatlined
+
+commit 305c2ed4341364b2033225160cbae6acd2319ea0
+Author: Jatin <j2130132806@gmail.com>
+Date:   Mon Jul 28 18:33:03 2025 -0400
+
+    working 12-varibale frontend
+
+commit fd75ec67166b646142dd287aa6d24ee72dc6c2c5
+Author: Jatin <j2130132806@gmail.com>
+Date:   Thu Jul 10 15:00:11 2025 -0400
+
+    frontend with fonal homepage and other tabs
+
+commit 7042b9ca344647b8dc64efcb56f6b46ffd4f5796
+Author: Jatin <j2130132806@gmail.com>
+Date:   Thu Jul 10 14:57:51 2025 -0400
+
+    :merged all branches
+
+commit 4fec38d3aa85ee86a28cf0ddc1e9761968c82713
+Author: Jatin <j2130132806@gmail.com>
+Date:   Wed Jul 9 17:20:18 2025 -0400
+
+    designdoc.md updated
+
+commit 589a6907b639ba8040274bf115ea00a9d7b6c551
+Author: Jatin <121313000+itzme170605@users.noreply.github.com>
+Date:   Wed Jul 9 17:19:36 2025 -0400
+
+    Create README.md
+
+commit 804daa69ae35b1f7652a1b38881f1e777a91f0fb
+Author: Jatin <121313000+itzme170605@users.noreply.github.com>
+Date:   Wed Jul 9 17:19:19 2025 -0400
+
+    Create designdoc.md
+
+commit 90708f97d5ba402cf1baacb1cba3484380c94da8
+Author: Jatin <j2130132806@gmail.com>
+Date:   Wed Jul 9 17:13:12 2025 -0400
+
+    original paper'
+
+commit b1a84d86f50df241e465415f3eb9569b6850c392
+Author: Jatin <j2130132806@gmail.com>
+Date:   Wed Jul 9 17:10:45 2025 -0400
+
+    diabetes app running
