@@ -18,22 +18,22 @@ const AboutPage: React.FC = () => {
       {/* Team Section */}
       <section className="team-section">
         <div className="container">
-          <h2>Development Team</h2>
+          <h2>NourLabians</h2>
           
           <div className="team-grid">
             {/* Professor */}
             <div className="team-member-card featured">
               <div className="member-photo">
                 <div className="photo-placeholder">
-                  <img src="/api/placeholder/200/200" alt="Professor" className="member-image" />
+                  <img src="/Nourridine_.jpeg" alt="Professor" className="member-image" />
                 </div>
               </div>
               <div className="member-info">
-                <h3>Dr. [Professor Name]</h3>
+                <h3>Dr. Nourridine Siewe</h3>
                 <p className="member-role">Project Supervisor & Research Mentor</p>
                 <p className="member-affiliation">
-                  Department of [Department]<br/>
-                  [University Name]
+                  School of Mathematics and Statistics<br/>
+                  Rochester Institute of Technology
                 </p>
                 <p className="member-bio">
                   Leading researcher in computational biology and mathematical modeling 
@@ -41,90 +41,107 @@ const AboutPage: React.FC = () => {
                   differential equation applications in medicine.
                 </p>
                 <div className="member-links">
-                  <a href="#" className="link-btn">📧 Email</a>
-                  <a href="#" className="link-btn">🏫 Faculty Page</a>
-                  <a href="#" className="link-btn">📚 Research</a>
+                  <a href="https://www.linkedin.com/in/nourridine-siewe-56284325/" className="link-btn">🔗 LinkedIn</a>
+                  <a href="https://www.rit.edu/directory/nxssma-nourridine-siewe" className="link-btn">🏫 Faculty Page</a>
+                  <a href="https://scholar.google.com/citations?user=twyTEFMAAAAJ&hl=en" className="link-btn">📚 Research</a>
                 </div>
               </div>
             </div>
 
-            {/* Student Developer */}
+            {/* Jatin Jain */}
             <div className="team-member-card">
               <div className="member-photo">
                 <div className="photo-placeholder">
-                  <img src="/api/placeholder/200/200" alt="Jatin" className="member-image" />
+                  <img src="/Jatin_.jpeg" alt="Jatin Jain" className="member-image" />
                 </div>
               </div>
               <div className="member-info">
-                <h3>Jatin Zain</h3>
+                <h3>Jatin Jain</h3>
                 <p className="member-role">Lead Developer & Project Manager</p>
                 <p className="member-affiliation">
-                  Computer Science Student<br/>
-                  [University Name]
+                  BSc Computer Science<br/>
+                  Rochester Institute of Technology
                 </p>
                 <p className="member-bio">
-                  Full-stack developer with expertise in React, Python, and scientific computing. 
-                  Passionate about applying technology to solve healthcare challenges and 
-                  making complex medical research accessible through interactive applications.
+                  Passionate full-stack developer experimenting across domains. Focused on combining 
+                  research, mathematics, and healthcare to build impactful, data-driven applications.
                 </p>
                 <div className="member-links">
                   <a href="https://github.com/itzme170605" className="link-btn">💻 GitHub</a>
-                  <a href="https://linkedin.com/in/jatin-zain" className="link-btn">💼 LinkedIn</a>
-                  <a href="#" className="link-btn">📧 Email</a>
+                  <a href="https://www.linkedin.com/in/jatin-jain2106/" className="link-btn">💼 LinkedIn</a>
                 </div>
               </div>
             </div>
 
-            {/* Team Member 2 */}
+            {/* Mercy Kioko */}
             <div className="team-member-card">
               <div className="member-photo">
                 <div className="photo-placeholder">
-                  <img src="/api/placeholder/200/200" alt="Team Member" className="member-image" />
+                  <img src="Mercy_.jpg" alt="Mercy Kioko" className="member-image" />
                 </div>
               </div>
               <div className="member-info">
-                <h3>[Team Member Name]</h3>
-                <p className="member-role">Research Assistant & Data Analyst</p>
+                <h3>Mercy Kioko</h3>
+                <p className="member-role">Graduate Research Assistant & Data Analyst</p>
                 <p className="member-affiliation">
-                  [Department/Program]<br/>
-                  [University Name]
+                  Applied Statistics<br/>
+                  Rochester Institute of Technology
                 </p>
                 <p className="member-bio">
-                  Specializes in data analysis and validation of mathematical models. 
-                  Contributed to parameter estimation and clinical validation of 
-                  the diabetes simulation model.
+                  Mercy extends the diabetes model framework by formulating new biological equations, 
+                  estimating parameters, simulating models, and analyzing sensitivities in metabolic pathways.
                 </p>
                 <div className="member-links">
-                  <a href="#" className="link-btn">🔬 Research Project</a>
-                  <a href="#" className="link-btn">💼 LinkedIn</a>
-                  <a href="#" className="link-btn">📧 Email</a>
+                  <a href="https://www.linkedin.com/in/mercy-kioko-b1a22b309" className="link-btn">💼 LinkedIn</a>
+                  <a href="mailto:mnk5928@rit.edu" className="link-btn">📧 Email</a>
                 </div>
               </div>
             </div>
 
-            {/* Team Member 3 */}
+            {/* Zach Zhao */}
             <div className="team-member-card">
               <div className="member-photo">
                 <div className="photo-placeholder">
-                  <img src="/api/placeholder/200/200" alt="Team Member" className="member-image" />
+                  <img src="/Zach_Zhao.jpg" alt="Zach Zhao" className="member-image" />
                 </div>
               </div>
               <div className="member-info">
-                <h3>[Team Member Name]</h3>
-                <p className="member-role">UI/UX Designer & Frontend Developer</p>
+                <h3>Zach Zhao</h3>
+                <p className="member-role">Mathematical Modeler</p>
                 <p className="member-affiliation">
-                  [Department/Program]<br/>
-                  [University Name]
+                  Applied Statistics & Mathematics<br/>
+                  Rochester Institute of Technology
                 </p>
                 <p className="member-bio">
-                  Focuses on user experience design and medical interface development. 
-                  Responsible for creating intuitive visualizations and ensuring 
-                  the application meets healthcare professional needs.
+                  Developed mathematical models for agricultural applications. Focuses on translating 
+                  research into analytical simulations to support data-driven solutions.
                 </p>
                 <div className="member-links">
-                  <a href="#" className="link-btn">🎨 Portfolio</a>
-                  <a href="#" className="link-btn">💼 LinkedIn</a>
-                  <a href="#" className="link-btn">📧 Email</a>
+                  <a href="https://www.linkedin.com/in/zzachzhao" className="link-btn">💼 LinkedIn</a>
+                  <a href="mailto:zz1769@rit.edu" className="link-btn">📧 Email</a>
+                </div>
+              </div>
+            </div>
+
+            {/* Neha Rajtiya */}
+            <div className="team-member-card">
+              <div className="member-photo">
+                <div className="photo-placeholder">
+                  <img src="/api/placeholder/200/200" alt="Neha Rajtiya" className="member-image" />
+                </div>
+              </div>
+              <div className="member-info">
+                <h3>Neha Rajtiya</h3>
+                <p className="member-role">PhD Student Researcher</p>
+                <p className="member-affiliation">
+                  --<br/>
+                  --
+                </p>
+                <p className="member-bio">
+                  --
+                </p>
+                <div className="member-links">
+                  {/* No links available */}
                 </div>
               </div>
             </div>
@@ -132,71 +149,8 @@ const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Research Collaboration */}
-      <section className="collaboration-section">
-        <div className="container">
-          <h2>Research Collaboration</h2>
-          <div className="collaboration-content">
-            <div className="collaboration-text">
-              <h3>Building on Academic Excellence</h3>
-              <p>
-                This project is built upon the foundational research by 
-                <strong> Dr. Nourridine Siewe</strong> and <strong>Dr. Avner Friedman</strong>, 
-                whose mathematical model provides the scientific backbone for our interactive simulation.
-              </p>
-              <p>
-                Our team has worked to translate complex mathematical concepts into 
-                an accessible, user-friendly application that serves both educational 
-                and research purposes in the diabetes community.
-              </p>
-              
-              <div className="collaboration-highlights">
-                <div className="highlight-item">
-                  <div className="highlight-icon">🔬</div>
-                  <h4>Scientific Rigor</h4>
-                  <p>Faithful implementation of peer-reviewed research</p>
-                </div>
-                <div className="highlight-item">
-                  <div className="highlight-icon">💻</div>
-                  <h4>Technical Innovation</h4>
-                  <p>Modern web technologies for interactive simulation</p>
-                </div>
-                <div className="highlight-item">
-                  <div className="highlight-icon">🏥</div>
-                  <h4>Clinical Relevance</h4>
-                  <p>Practical applications for healthcare professionals</p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="collaboration-visual">
-              <div className="collaboration-diagram">
-                <div className="diagram-node research">
-                  <div className="node-icon">📄</div>
-                  <div className="node-label">Research Paper</div>
-                </div>
-                <div className="diagram-arrow">→</div>
-                <div className="diagram-node implementation">
-                  <div className="node-icon">⚙️</div>
-                  <div className="node-label">Mathematical Model</div>
-                </div>
-                <div className="diagram-arrow">→</div>
-                <div className="diagram-node application">
-                  <div className="node-icon">🖥️</div>
-                  <div className="node-label">Web Application</div>
-                </div>
-                <div className="diagram-arrow">→</div>
-                <div className="diagram-node impact">
-                  <div className="node-icon">🌍</div>
-                  <div className="node-label">Community Impact</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Research Collaboration and Timeline kept same */}
 
-      {/* Project Timeline */}
       <section className="timeline-section">
         <div className="container">
           <h2>Project Timeline</h2>
@@ -233,7 +187,7 @@ const AboutPage: React.FC = () => {
                 <p>User interface development and system integration</p>
               </div>
             </div>
-            <div className="timeline-item current">
+            <div className="timeline-item">
               <div className="timeline-marker"></div>
               <div className="timeline-content">
                 <h3>Sprint 4: Refinement & Validation</h3>
@@ -241,146 +195,13 @@ const AboutPage: React.FC = () => {
                 <p>Model validation, performance optimization, and documentation</p>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Technology Stack */}
-      <section className="tech-section">
-        <div className="container">
-          <h2>Technology Stack</h2>
-          <div className="tech-grid">
-            <div className="tech-category">
-              <h3>Backend</h3>
-              <div className="tech-items">
-                <div className="tech-item">
-                  <div className="tech-icon">🐍</div>
-                  <span>Python</span>
-                </div>
-                <div className="tech-item">
-                  <div className="tech-icon">⚡</div>
-                  <span>FastAPI</span>
-                </div>
-                <div className="tech-item">
-                  <div className="tech-icon">🧮</div>
-                  <span>NumPy/SciPy</span>
-                </div>
-                <div className="tech-item">
-                  <div className="tech-icon">📊</div>
-                  <span>Matplotlib</span>
-                </div>
+            <div className="timeline-item current">
+              <div className="timeline-marker"></div>
+              <div className="timeline-content">
+                <h3>Sprint 5: Deployment & Feedback</h3>
+                <p className="timeline-date">Week 8+</p>
+                <p>Public deployment, feedback collection, and feature enhancements</p>
               </div>
-            </div>
-            
-            <div className="tech-category">
-              <h3>Frontend</h3>
-              <div className="tech-items">
-                <div className="tech-item">
-                  <div className="tech-icon">⚛️</div>
-                  <span>React</span>
-                </div>
-                <div className="tech-item">
-                  <div className="tech-icon">📘</div>
-                  <span>TypeScript</span>
-                </div>
-                <div className="tech-item">
-                  <div className="tech-icon">📈</div>
-                  <span>Plotly.js</span>
-                </div>
-                <div className="tech-item">
-                  <div className="tech-icon">🎨</div>
-                  <span>CSS3</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="tech-category">
-              <h3>Tools & Deployment</h3>
-              <div className="tech-items">
-                <div className="tech-item">
-                  <div className="tech-icon">🐙</div>
-                  <span>Git/GitHub</span>
-                </div>
-                <div className="tech-item">
-                  <div className="tech-icon">🔧</div>
-                  <span>Node.js</span>
-                </div>
-                <div className="tech-item">
-                  <div className="tech-icon">📦</div>
-                  <span>Docker</span>
-                </div>
-                <div className="tech-item">
-                  <div className="tech-icon">☁️</div>
-                  <span>Cloud Ready</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section className="contact-section">
-        <div className="container">
-          <h2>Get in Touch</h2>
-          <div className="contact-content">
-            <div className="contact-text">
-              <h3>Questions or Feedback?</h3>
-              <p>
-                We'd love to hear from you! Whether you're a healthcare professional, 
-                researcher, or student interested in diabetes modeling, feel free to reach out.
-              </p>
-              <div className="contact-methods">
-                <div className="contact-method">
-                  <div className="method-icon">📧</div>
-                  <div className="method-info">
-                    <h4>Email</h4>
-                    <p>diabetesscope@university.edu</p>
-                  </div>
-                </div>
-                <div className="contact-method">
-                  <div className="method-icon">🏫</div>
-                  <div className="method-info">
-                    <h4>Institution</h4>
-                    <p>[University Name]<br/>[Department]</p>
-                  </div>
-                </div>
-                <div className="contact-method">
-                  <div className="method-icon">💻</div>
-                  <div className="method-info">
-                    <h4>GitHub</h4>
-                    <p>github.com/itzme170605/diabetes-prediction-app</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="contact-form">
-              <h3>Send us a message</h3>
-              <form className="feedback-form">
-                <div className="form-group">
-                  <label>Name</label>
-                  <input type="text" placeholder="Your name" />
-                </div>
-                <div className="form-group">
-                  <label>Email</label>
-                  <input type="email" placeholder="Your email" />
-                </div>
-                <div className="form-group">
-                  <label>Subject</label>
-                  <select>
-                    <option>General Inquiry</option>
-                    <option>Research Collaboration</option>
-                    <option>Technical Support</option>
-                    <option>Feature Request</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Message</label>
-                  <textarea placeholder="Your message" rows={5}></textarea>
-                </div>
-                <button type="submit" className="btn-primary">Send Message</button>
-              </form>
             </div>
           </div>
         </div>

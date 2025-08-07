@@ -53,7 +53,7 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({
   });
   
   const [selectedMetrics, setSelectedMetrics] = useState({
-    glucose: true,
+    glucose: false,
     insulin: true,
     glucagon: false,
     glp1: false,
@@ -590,6 +590,19 @@ const SimulationDashboard: React.FC<SimulationDashboardProps> = ({
             )}
           </div>
         </div>
+        <div className="disclaimer">
+  <p style={{
+    backgroundColor: '#fff3cd',
+    color: '#856404',
+    border: '1px solid #ffeeba',
+    padding: '1rem',
+    borderRadius: '8px',
+    marginBottom: '1rem',
+    fontSize: '14px'
+  }}>
+    ⚠️ <strong>Disclaimer:</strong> This simulation is under active research and development. It has not been medically validated or approved. Parameters, weights, and responses are experimental and should not be used for medical decision-making.
+  </p>
+</div>
         <div className="dashboard-actions">
           <button 
             className="btn-secondary" 

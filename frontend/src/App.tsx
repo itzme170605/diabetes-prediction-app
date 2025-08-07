@@ -78,7 +78,7 @@ function App() {
       <nav className="navbar">
         <div className="navbar-container">
           <div className="navbar-logo" onClick={handleBackToHome}>
-            <h1>DiabetesScope</h1>
+            <h1>NourLab</h1>
             <span>Glucose Dynamics Simulator</span>
           </div>
           <div className="navbar-menu">
@@ -137,7 +137,7 @@ function App() {
           <div className="footer-container">
             <div className="footer-content">
               <div className="footer-section">
-                <h3>DiabetesScope</h3>
+                <h3>NourLab</h3>
                 <p>Advanced mathematical modeling of glucose dynamics in diabetes.</p>
               </div>
               <div className="footer-section">
