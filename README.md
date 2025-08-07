@@ -1,7 +1,7 @@
 # DiabetesScope - Glucose Dynamics Simulator
 ## Design Document
 
-**Version:** 1.3.8
+**Version:** 2.1.0
 **Date:** July 2025  
 **Project:** Diabetes Prediction App  
 **Repository:** [diabetes-prediction-app](https://github.com/itzme170605/diabetes-prediction-app.git)
